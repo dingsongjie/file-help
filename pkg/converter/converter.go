@@ -10,3 +10,7 @@ type Converter interface {
 	ToPrettyPdf(inputFile string, outputFile string) error
 	Destory()
 }
+
+var (
+	Converters []Converter
+)

@@ -37,3 +37,9 @@ func ConverteFisrtPageToGavingKey(c *gin.Context) {
 		c.JSON(http.StatusOK, info)
 	}
 }
+
+func convertCore(request converter.ConverteFirstAndReturnS3KeyRequest) {
+	for i := range request.Items {
+
+	}
+}

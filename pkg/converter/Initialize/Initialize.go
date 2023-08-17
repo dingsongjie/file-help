@@ -7,19 +7,15 @@ import (
 	"www.github.com/dingsongjie/file-help/pkg/converter/imagickconverter"
 )
 
-var (
-	Converters []converter.Converter
-)
-
 func RegisterConverters() {
-	Converters = make([]converter.Converter, 3)
-	Converters[0] = aiconverter.NewConverter()
-	Converters[1] = cdrconverter.NewConverter()
-	Converters[2] = imagickconverter.NewConverter()
+	converter.Converters = make([]converter.Converter, 3)
+	converter.Converters[0] = aiconverter.NewConverter()
+	converter.Converters[1] = cdrconverter.NewConverter()
+	converter.Converters[2] = imagickconverter.NewConverter()
 }
 
 func DestoryConverters() {
-	for i := range Converters {
-		Converters[i].Destory()
+	for i := range converter.Converters {
+		converter.Converters[i].Destory()
 	}
 }

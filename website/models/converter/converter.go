@@ -3,7 +3,7 @@ package converter
 import "strings"
 
 type ConverteFirstAndReturnS3KeyRequest struct {
-	Items []ConverteFirstAndReturnS3KeyItem `validate:"max=50"`
+	Items []ConverteFirstAndReturnS3KeyItem `validate:"max=50,min=1"`
 }
 
 type ConverteFirstAndReturnS3KeyItem struct {
