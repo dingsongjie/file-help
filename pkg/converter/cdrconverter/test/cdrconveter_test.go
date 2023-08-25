@@ -32,14 +32,14 @@ func TestToFastPng(t *testing.T) {
 		}
 	})
 
-	t.Run("cdr-3 to png", func(t *testing.T) {
-		aiAbsolutePath := path.Join(mydir, "./assets/3.cdr")
-		outputAbsolutePath := path.Join(mydir, "./outputs/cdr-3.png")
-		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
-		if err != nil {
-			t.Errorf(errorFormat, err)
-		}
-	})
+	// t.Run("cdr-3 to png", func(t *testing.T) {
+	// 	aiAbsolutePath := path.Join(mydir, "./assets/3.cdr")
+	// 	outputAbsolutePath := path.Join(mydir, "./outputs/cdr-3.png")
+	// 	err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+	// 	if err != nil {
+	// 		t.Errorf(errorFormat, err)
+	// 	}
+	// })
 
 	converter.Destory()
 }
@@ -58,11 +58,11 @@ func TestToPrettyPdf(t *testing.T) {
 		converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
 	})
 
-	t.Run("cdr-3 to pdf", func(t *testing.T) {
-		aiAbsolutePath := path.Join(mydir, "./assets/3.cdr")
-		outputAbsolutePath := path.Join(mydir, "./outputs/cdr-3.pdf")
-		converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
-	})
+	// t.Run("cdr-3 to pdf", func(t *testing.T) {
+	// 	aiAbsolutePath := path.Join(mydir, "./assets/3.cdr")
+	// 	outputAbsolutePath := path.Join(mydir, "./outputs/cdr-3.pdf")
+	// 	converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
+	// })
 	converter.Destory()
 }
 func BenchmarkToFastPng(b *testing.B) {

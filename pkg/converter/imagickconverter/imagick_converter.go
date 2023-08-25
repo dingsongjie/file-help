@@ -1,6 +1,7 @@
 package imagickconverter
 
 import (
+	"fmt"
 	"sync"
 
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -35,12 +36,13 @@ func NewConverter() *ImagickConverter {
 	return instance
 }
 
-func (r *ImagickConverter) Convert(inputFile string, outputFile string, firstPage bool) error {
+func (r *ImagickConverter) convert(inputFile string, outputFile string, firstPage bool) error {
 	if firstPage {
 		inputFile = inputFile + "[0]"
 	}
-	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
-	if err == nil {
+	result, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
+	fmt.Print(result)
+	if err != nil {
 		return err
 	}
 	return nil
@@ -51,11 +53,11 @@ func (r *ImagickConverter) ToFastImage(inputFile string, outputFile string) erro
 }
 
 func (r *ImagickConverter) ToPrettyPdf(inputFile string, outputFile string) error {
-	return r.Convert(inputFile, outputFile, false)
+	return r.convert(inputFile, outputFile, false)
 }
 
 func (r *ImagickConverter) ConvertToJpeg(inputFile string, outputFile string, firstPage bool) error {
-	return r.Convert(inputFile, outputFile, firstPage)
+	return r.convert(inputFile, outputFile, firstPage)
 }
 
 func (r *ImagickConverter) Destory() {

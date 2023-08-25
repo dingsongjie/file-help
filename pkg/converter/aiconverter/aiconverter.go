@@ -11,12 +11,12 @@ import (
 
 var (
 	singletonMu sync.Mutex = sync.Mutex{}
+	gsCommandMu sync.Mutex = sync.Mutex{}
 	instance    *AiConverter
 )
 
 type AiConverter struct {
 	internalGSInstance      *ghostscript.Ghostscript
-	mu                      sync.Mutex
 	AllowedConverteTypeMaps []*converter.ConverterTypePair
 }
 
@@ -25,37 +25,42 @@ func NewConverter() *AiConverter {
 		singletonMu.Lock()
 		if instance == nil {
 			instance = &AiConverter{}
-			instance.mu = sync.Mutex{}
 			instance.AllowedConverteTypeMaps = make([]*converter.ConverterTypePair, 3)
 			instance.AllowedConverteTypeMaps[0] = &converter.ConverterTypePair{SourceType: "ai", TargetType: "jpg"}
 			instance.AllowedConverteTypeMaps[1] = &converter.ConverterTypePair{SourceType: "ai", TargetType: "jpeg"}
 			instance.AllowedConverteTypeMaps[2] = &converter.ConverterTypePair{SourceType: "ai", TargetType: "pdf"}
 		}
 		singletonMu.Unlock()
+		instance.initialise()
 	}
 	return instance
 }
 
 func (r *AiConverter) initialise() {
 	if r.internalGSInstance == nil {
-		rev, err := ghostscript.GetRevision()
-		if err != nil {
-			log.Logger.Sugar().Fatalf("Revision: %+v\n", rev)
-		}
+		singletonMu.Lock()
+		if r.internalGSInstance == nil {
+			rev, err := ghostscript.GetRevision()
+			if err != nil {
+				log.Logger.Sugar().Fatalf("Revision: %+v\n", rev)
+			}
 
-		r.internalGSInstance, err = ghostscript.NewInstance()
-		if err != nil {
-			log.Logger.Sugar().Fatalf("Error: %+v\n", err)
+			r.internalGSInstance, err = ghostscript.NewInstance()
+			if err != nil {
+				log.Logger.Sugar().Fatalf("Error: %+v\n", err)
+			}
 		}
+		singletonMu.Unlock()
 	}
 }
 func (r *AiConverter) ToFastImage(inputFile string, outputFile string) error {
 	return r.ToFastJpeg(inputFile, outputFile)
 
 }
-func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) error {
-	r.mu.Lock()
-	r.initialise()
+func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) (err error) {
+	gsCommandMu.Lock()
+	instance.initialise()
+	defer gsCommandMu.Unlock()
 	args := []string{
 		"gs", // This will be ignored
 		"-q",
@@ -82,22 +87,22 @@ func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) error {
 		"-sOutputFile=" + outputFile,
 		inputFile,
 	}
-
 	if err := r.internalGSInstance.Init(args); err != nil {
-		panic(err)
+		return err
 	}
-	r.mu.Unlock()
 	defer func() {
-		r.internalGSInstance.Exit()
+		err = r.internalGSInstance.Exit()
 		r.internalGSInstance.Destroy()
 		r.internalGSInstance = nil
 	}()
+
 	return nil
 }
 
 func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
-	r.mu.Lock()
+	gsCommandMu.Lock()
 	r.initialise()
+	defer gsCommandMu.Unlock()
 	args := []string{
 		"gs", // This will be ignored
 		"-q",
@@ -125,9 +130,8 @@ func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
 	}
 
 	if err := r.internalGSInstance.Init(args); err != nil {
-		panic(err)
+		return err
 	}
-	r.mu.Unlock()
 	defer func() {
 		r.internalGSInstance.Exit()
 		r.internalGSInstance.Destroy()
@@ -136,5 +140,5 @@ func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
 	return nil
 }
 func (r *AiConverter) Destory() {
-
+	log.Logger.Info("AiConverter destoryed")
 }

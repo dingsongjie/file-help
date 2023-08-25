@@ -3,32 +3,23 @@ package Initialize
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/converter/aiconverter"
-	"www.github.com/dingsongjie/file-help/pkg/converter/cdrconverter"
 	"www.github.com/dingsongjie/file-help/pkg/converter/imagickconverter"
 )
 
 func TestRegisterConverters(t *testing.T) {
+	assert := assert.New(t)
 	RegisterConverters()
-	err := "initialize not successd"
-	if len(converter.Converters) != 3 {
-		t.Errorf(err)
-	}
-
-	if _, ok := (converter.Converters[0]).(*aiconverter.AiConverter); ok {
-		t.Errorf(err)
-	}
-	if _, ok := (converter.Converters[1]).(*cdrconverter.CdrConverter); ok {
-		t.Errorf(err)
-	}
-	if _, ok := (converter.Converters[2]).(*imagickconverter.ImagickConverter); ok {
-		t.Errorf(err)
-	}
+	assert.Equal(2, len(converter.Converters))
+	_, ok := (converter.Converters[0]).(*aiconverter.AiConverter)
+	assert.True(ok)
+	_, ok = (converter.Converters[1]).(*imagickconverter.ImagickConverter)
+	assert.True(ok)
 }
 
-func TestDestoryConverters() {
-	for i := range converter.Converters {
-		converter.Converters[i].Destory()
-	}
+func TestDestoryConverters(t *testing.T) {
+	RegisterConverters()
+	DestoryConverters()
 }
