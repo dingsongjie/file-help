@@ -1,7 +1,6 @@
 package imagickconverter
 
 import (
-	"fmt"
 	"sync"
 
 	"gopkg.in/gographics/imagick.v3/imagick"
@@ -14,7 +13,7 @@ var (
 )
 
 type ImagickConverter struct {
-	internalGSInstance      *imagick.MagickWand
+	// internalGSInstance      *imagick.MagickWand
 	mu                      sync.Mutex
 	AllowedConverteTypeMaps []*converter.ConverterTypePair
 }
@@ -40,8 +39,7 @@ func (r *ImagickConverter) convert(inputFile string, outputFile string, firstPag
 	if firstPage {
 		inputFile = inputFile + "[0]"
 	}
-	result, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
-	fmt.Print(result)
+	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
 		return err
 	}
@@ -61,12 +59,12 @@ func (r *ImagickConverter) ConvertToJpeg(inputFile string, outputFile string, fi
 }
 
 func (r *ImagickConverter) Destory() {
-	if r.internalGSInstance != nil {
-		r.mu.Lock()
-		if r.internalGSInstance != nil {
-			r.internalGSInstance.Destroy()
-		}
-		r.mu.Unlock()
-	}
+	// if r.internalGSInstance != nil {
+	// 	r.mu.Lock()
+	// 	if r.internalGSInstance != nil {
+	// 		r.internalGSInstance.Destroy()
+	// 	}
+	// 	r.mu.Unlock()
+	// }
 	imagick.Terminate()
 }

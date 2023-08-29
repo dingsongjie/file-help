@@ -67,13 +67,6 @@ func TestToFastImage(t *testing.T) {
 	})
 	converter.Destory()
 
-	// t.Run("nil converter destory", func(t *testing.T) {
-	// 	aiAbsolutePath := path.Join(mydir, "./test/assets/4.psd")
-	// 	outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-4.jpeg")
-	// 	err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
-	// 	assert.NotNil(err)
-	// })
-
 	t.Run("run safely concurrently", func(t *testing.T) {
 		wantedCount := 10
 		var wg sync.WaitGroup
