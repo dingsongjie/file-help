@@ -13,8 +13,8 @@ func TestGetFisrtImageByGavingKeyResponseAddItem(t *testing.T) {
 		response.AddItem(&ConvertByGavingKeyResponseItem{SourceKey: "testkey", IsSucceed: true})
 		response.AddItem(&ConvertByGavingKeyResponseItem{SourceKey: "testkey2", IsSucceed: true})
 		response.AddItem(&ConvertByGavingKeyResponseItem{SourceKey: "testkey3", IsSucceed: true})
-		assert.True(response.isAllSucceed)
-		assert.Equal(3, len(response.items))
+		assert.True(response.IsAllSucceed)
+		assert.Equal(3, len(response.Items))
 	})
 
 	t.Run("one faild", func(t *testing.T) {
@@ -22,8 +22,8 @@ func TestGetFisrtImageByGavingKeyResponseAddItem(t *testing.T) {
 		response.AddItem(&ConvertByGavingKeyResponseItem{SourceKey: "testkey", IsSucceed: true})
 		response.AddItem(&ConvertByGavingKeyResponseItem{SourceKey: "testkey3", IsSucceed: false, Message: "key not exist"})
 		response.AddItem(&ConvertByGavingKeyResponseItem{SourceKey: "testkey2", IsSucceed: true})
-		assert.False(response.isAllSucceed)
-		assert.Equal(3, len(response.items))
-		assert.Equal("key not exist", response.items[1].Message)
+		assert.False(response.IsAllSucceed)
+		assert.Equal(3, len(response.Items))
+		assert.Equal("key not exist", response.Items[1].Message)
 	})
 }

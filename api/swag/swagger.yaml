@@ -7,10 +7,42 @@ definitions:
         maxItems: 10
         minItems: 1
         type: array
+    required:
+    - items
     type: object
   converter.ConvertByGavingKeyRequestItem:
+    properties:
+      sourceKey:
+        type: string
+      targetKey:
+        type: string
+    required:
+    - sourceKey
+    - targetKey
     type: object
   converter.ConvertByGavingKeyResponse:
+    properties:
+      isAllSucceed:
+        type: boolean
+      items:
+        items:
+          $ref: '#/definitions/converter.ConvertByGavingKeyResponseItem'
+        type: array
+    required:
+    - isAllSucceed
+    - items
+    type: object
+  converter.ConvertByGavingKeyResponseItem:
+    properties:
+      isSucceed:
+        type: boolean
+      message:
+        type: string
+      sourceKey:
+        type: string
+    required:
+    - isSucceed
+    - sourceKey
     type: object
   models.AclError:
     properties:
@@ -44,11 +76,11 @@ definitions:
 info:
   contact: {}
 paths:
-  /GetFisrtImageByGavingKey:
+  /Converter/GetFisrtImageByGavingKey:
     post:
       consumes:
       - application/json
-      description: ConvertByGavingKeyRequest
+      description: GetFisrtImageByGavingKey
       parameters:
       - description: request
         in: body
@@ -67,14 +99,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.CommonErrorResponse'
-      summary: ConvertByGavingKeyRequest
+      summary: GetFisrtImageByGavingKey
       tags:
-      - ConvertByGavingKeyRequest
-  /GetPdfByGavingKey:
+      - GetFisrtImageByGavingKey
+  /Converter/GetPdfByGavingKey:
     post:
       consumes:
       - application/json
-      description: ConvertByGavingKeyRequest
+      description: GetPdfByGavingKey
       parameters:
       - description: request
         in: body
@@ -93,7 +125,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.CommonErrorResponse'
-      summary: ConvertByGavingKeyRequest
+      summary: GetPdfByGavingKey
       tags:
-      - ConvertByGavingKeyRequest
+      - GetPdfByGavingKey
 swagger: "2.0"

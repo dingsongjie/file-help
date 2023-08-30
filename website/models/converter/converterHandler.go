@@ -43,9 +43,9 @@ func (r GetFisrtImageByGavingKeyRequestHandler) Handle(request *ConvertByGavingK
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) Handle(item *ConvertByGavingKeyRequestItem) *ConvertByGavingKeyResponseItem {
 	err := r.HandleCore(item)
 	if err == nil {
-		return &ConvertByGavingKeyResponseItem{SourceKey: item.sourceKey, IsSucceed: true}
+		return &ConvertByGavingKeyResponseItem{SourceKey: item.SourceKey, IsSucceed: true}
 	}
-	return &ConvertByGavingKeyResponseItem{SourceKey: item.sourceKey, IsSucceed: false, Message: err.Error()}
+	return &ConvertByGavingKeyResponseItem{SourceKey: item.SourceKey, IsSucceed: false, Message: err.Error()}
 }
 
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByGavingKeyRequestItem) error {
@@ -59,12 +59,16 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 	if firstHandler == nil {
 		return fmt.Errorf("convert is not support, sourceType:%s,targetType:%s", pair.SourceType, pair.TargetType)
 	}
-	fileHandler, err := r.downloadSourceFile(item.sourceKey)
+	fileHandler, err := r.downloadSourceFile(item.SourceKey)
 	if err != nil {
 		return err
 	}
 	defer fileHandler.Destory()
-	generateFilePath := path.Join(os.TempDir(), "generate", item.targetKey)
+	generateFilePath := path.Join(os.TempDir(), "generate", item.TargetKey)
+	err = os.MkdirAll(path.Dir(generateFilePath), 0770)
+	if err != nil {
+		return err
+	}
 	// 这里目前只有两种 先做简单判断
 	if pair.TargetType == "pdf" {
 		err := firstHandler.ToPrettyPdf(fileHandler.Path, generateFilePath)
@@ -77,7 +81,7 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 			return err
 		}
 	}
-	err = r.uploadTargetFile(generateFilePath, item.targetKey)
+	err = r.uploadTargetFile(generateFilePath, item.TargetKey)
 	if err != nil {
 		return err
 	}
@@ -85,13 +89,13 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 }
 
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) validateAndGetFileConverterPair(item *ConvertByGavingKeyRequestItem) (*converter.ConverterTypePair, error) {
-	sourceKeySplit := strings.Split(item.sourceKey, ".")
+	sourceKeySplit := strings.Split(item.SourceKey, ".")
 	if len(sourceKeySplit) != 2 {
-		return nil, fmt.Errorf("wrong sourceKey, sourceKey:%s", item.sourceKey)
+		return nil, fmt.Errorf("wrong sourceKey, sourceKey:%s", item.SourceKey)
 	}
-	targetKeySplit := strings.Split(item.targetKey, ".")
+	targetKeySplit := strings.Split(item.TargetKey, ".")
 	if len(targetKeySplit) != 2 {
-		return nil, fmt.Errorf("wrong targetKey, targetKey:%s", item.targetKey)
+		return nil, fmt.Errorf("wrong targetKey, targetKey:%s", item.TargetKey)
 	}
 	return &converter.ConverterTypePair{SourceType: sourceKeySplit[1], TargetType: targetKeySplit[1]}, nil
 }

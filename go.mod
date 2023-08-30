@@ -3,7 +3,6 @@ module www.github.com/dingsongjie/file-help
 go 1.20
 
 require (
-	github.com/dingsongjie/go-project-template v0.0.0-20230724081454-1dd62b74a328
 	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
@@ -17,13 +16,16 @@ require (
 	github.com/STRockefeller/go-linq v1.0.1 // indirect
 	github.com/andybalholm/brotli v0.0.0-20190621154722-5f990b63d2d6 // indirect
 	github.com/aws/aws-sdk-go v1.44.325 // indirect
+	github.com/baishancloud/gin-oidc v0.1.1 // indirect
 	github.com/bytedance/sonic v1.9.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/coreos/go-oidc v2.2.1+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/galihrivanto/go-inkscape v0.1.5 // indirect
 	github.com/galihrivanto/runner v0.1.1 // indirect
+	github.com/gin-contrib/sessions v0.0.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
@@ -34,7 +36,11 @@ require (
 	github.com/go-playground/validator/v10 v10.14.1 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/gddo v0.0.0-20190419222130-af0f2af80721 // indirect
+	github.com/golang/protobuf v1.5.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/gorilla/context v1.1.1 // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gorilla/sessions v1.1.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
@@ -54,6 +60,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
@@ -70,12 +77,15 @@ require (
 	golang.org/x/crypto v0.10.0 // indirect
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/net v0.11.0 // indirect
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/text v0.10.0 // indirect
 	golang.org/x/tools v0.10.0 // indirect
+	google.golang.org/appengine v1.4.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/gographics/imagick.v2 v2.6.3 // indirect
 	gopkg.in/gographics/imagick.v3 v3.4.3 // indirect
+	gopkg.in/square/go-jose.v2 v2.5.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.1 // indirect
 	gorm.io/gorm v1.25.2 // indirect

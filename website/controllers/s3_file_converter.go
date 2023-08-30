@@ -8,17 +8,17 @@ import (
 	"www.github.com/dingsongjie/file-help/website/models/converter"
 )
 
-// @BasePath /converter
-// ConvertByGavingKeyRequest
-// @Summary ConvertByGavingKeyRequest
-// @Description ConvertByGavingKeyRequest
-// @Tags ConvertByGavingKeyRequest
+// @BasePath /
+// GetFisrtImageByGavingKey
+// @Summary GetFisrtImageByGavingKey
+// @Description GetFisrtImageByGavingKey
+// @Tags GetFisrtImageByGavingKey
 // @Accept json
 // @Produce json
 // @param request body converter.ConvertByGavingKeyRequest true "request"
 // @Success 200  {object} converter.ConvertByGavingKeyResponse
 // @Failure 400  {object} models.CommonErrorResponse
-// @Router /GetFisrtImageByGavingKey [post]
+// @Router /Converter/GetFisrtImageByGavingKey [post]
 func GetFisrtImageByGavingKey(c *gin.Context) {
 	var request = converter.ConvertByGavingKeyRequest{}
 	if err := c.BindJSON(&request); err != nil {
@@ -32,17 +32,17 @@ func GetFisrtImageByGavingKey(c *gin.Context) {
 	c.JSON(http.StatusOK, GetFisrtImageByGavingKeyResponse)
 }
 
-// @BasePath /converter
-// ConvertByGavingKeyRequest
-// @Summary ConvertByGavingKeyRequest
-// @Description ConvertByGavingKeyRequest
-// @Tags ConvertByGavingKeyRequest
+// @BasePath /
+// GetPdfByGavingKey
+// @Summary GetPdfByGavingKey
+// @Description GetPdfByGavingKey
+// @Tags GetPdfByGavingKey
 // @Accept json
 // @Produce json
 // @param request body converter.ConvertByGavingKeyRequest true "request"
 // @Success 200  {object} converter.ConvertByGavingKeyResponse
 // @Failure 400  {object} models.CommonErrorResponse
-// @Router /GetPdfByGavingKey [post]
+// @Router /Converter/GetPdfByGavingKey [post]
 func GetPdfByGavingKey(c *gin.Context) {
 	GetFisrtImageByGavingKey(c)
 }

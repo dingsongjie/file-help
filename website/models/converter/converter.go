@@ -1,12 +1,12 @@
 package converter
 
 type ConvertByGavingKeyRequest struct {
-	Items []ConvertByGavingKeyRequestItem `validate:"max=10,min=1"`
+	Items []ConvertByGavingKeyRequestItem `validate:"required,max=10,min=1"`
 }
 
 type ConvertByGavingKeyRequestItem struct {
-	sourceKey string `validate:"required"`
-	targetKey string `validate:"required"`
+	SourceKey string `validate:"required"`
+	TargetKey string `validate:"required"`
 }
 
 type ConvertByGavingKeyResponseItem struct {
@@ -16,17 +16,17 @@ type ConvertByGavingKeyResponseItem struct {
 }
 
 type ConvertByGavingKeyResponse struct {
-	items        []ConvertByGavingKeyResponseItem `validate:"required"`
-	isAllSucceed bool                             `validate:"required"`
+	Items        []ConvertByGavingKeyResponseItem `validate:"required"`
+	IsAllSucceed bool                             `validate:"required"`
 }
 
 func NewGetFisrtImageByGavingKeyResponse() *ConvertByGavingKeyResponse {
-	return &ConvertByGavingKeyResponse{isAllSucceed: true}
+	return &ConvertByGavingKeyResponse{IsAllSucceed: true}
 }
 
 func (r *ConvertByGavingKeyResponse) AddItem(item *ConvertByGavingKeyResponseItem) {
-	r.items = append(r.items, *item)
+	r.Items = append(r.Items, *item)
 	if !item.IsSucceed {
-		r.isAllSucceed = false
+		r.IsAllSucceed = false
 	}
 }

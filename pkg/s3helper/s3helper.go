@@ -50,12 +50,14 @@ func NewS3Helper(endpoint, accessKey, secretKey, bucketName string) (S3Helper, e
 func safelyCreateOrGetSession(endpoint, accessKey, secretKey, bucketName string) *client.ConfigProvider {
 	if sess == nil {
 		mu.Lock()
+		defaultRegion := "us-east-1"
 		if sess == nil {
 			instance, err := session.NewSession(&aws.Config{
 				Credentials:      credentials.NewStaticCredentials(accessKey, secretKey, ""),
 				Endpoint:         aws.String(endpoint),
 				DisableSSL:       aws.Bool(false),
 				S3ForcePathStyle: aws.Bool(true),
+				Region:           &defaultRegion,
 			})
 			sess = session.Must(instance, err)
 		}
@@ -88,6 +90,8 @@ func (r *S3DefaultHelper) DownLoadAndReturnLocalPath(fileKey string) (*LocalFile
 		d.PartSize = 1024 * 1024 * 32
 	})
 	if err != nil {
+		err2 := os.Remove(filename)
+		fmt.Print(err2)
 		return nil, err
 	}
 	handle := LocalFileHandle{Path: filename, IsDestory: false}

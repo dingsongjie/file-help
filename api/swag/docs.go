@@ -16,9 +16,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/GetFisrtImageByGavingKey": {
+        "/Converter/GetFisrtImageByGavingKey": {
             "post": {
-                "description": "ConvertByGavingKeyRequest",
+                "description": "GetFisrtImageByGavingKey",
                 "consumes": [
                     "application/json"
                 ],
@@ -26,9 +26,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "ConvertByGavingKeyRequest"
+                    "GetFisrtImageByGavingKey"
                 ],
-                "summary": "ConvertByGavingKeyRequest",
+                "summary": "GetFisrtImageByGavingKey",
                 "parameters": [
                     {
                         "description": "request",
@@ -56,9 +56,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/GetPdfByGavingKey": {
+        "/Converter/GetPdfByGavingKey": {
             "post": {
-                "description": "ConvertByGavingKeyRequest",
+                "description": "GetPdfByGavingKey",
                 "consumes": [
                     "application/json"
                 ],
@@ -66,9 +66,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "ConvertByGavingKeyRequest"
+                    "GetPdfByGavingKey"
                 ],
-                "summary": "ConvertByGavingKeyRequest",
+                "summary": "GetPdfByGavingKey",
                 "parameters": [
                     {
                         "description": "request",
@@ -100,6 +100,9 @@ const docTemplate = `{
     "definitions": {
         "converter.ConvertByGavingKeyRequest": {
             "type": "object",
+            "required": [
+                "items"
+            ],
             "properties": {
                 "items": {
                     "type": "array",
@@ -112,10 +115,55 @@ const docTemplate = `{
             }
         },
         "converter.ConvertByGavingKeyRequestItem": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "sourceKey",
+                "targetKey"
+            ],
+            "properties": {
+                "sourceKey": {
+                    "type": "string"
+                },
+                "targetKey": {
+                    "type": "string"
+                }
+            }
         },
         "converter.ConvertByGavingKeyResponse": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "isAllSucceed",
+                "items"
+            ],
+            "properties": {
+                "isAllSucceed": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/converter.ConvertByGavingKeyResponseItem"
+                    }
+                }
+            }
+        },
+        "converter.ConvertByGavingKeyResponseItem": {
+            "type": "object",
+            "required": [
+                "isSucceed",
+                "sourceKey"
+            ],
+            "properties": {
+                "isSucceed": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "sourceKey": {
+                    "type": "string"
+                }
+            }
         },
         "models.AclError": {
             "type": "object",
