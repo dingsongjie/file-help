@@ -3,6 +3,7 @@ package imagickconverter
 import (
 	"sync"
 
+	"github.com/STRockefeller/go-linq"
 	"gopkg.in/gographics/imagick.v3/imagick"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
 )
@@ -15,7 +16,7 @@ var (
 type ImagickConverter struct {
 	// internalGSInstance      *imagick.MagickWand
 	mu                      sync.Mutex
-	AllowedConverteTypeMaps []*converter.ConverterTypePair
+	AllowedConverteTypeMaps linq.Linq[*converter.ConverterTypePair]
 }
 
 func NewConverter() *ImagickConverter {
@@ -56,6 +57,13 @@ func (r *ImagickConverter) ToPrettyPdf(inputFile string, outputFile string) erro
 
 func (r *ImagickConverter) ConvertToJpeg(inputFile string, outputFile string, firstPage bool) error {
 	return r.convert(inputFile, outputFile, firstPage)
+}
+
+func (r *ImagickConverter) CanHandle(pair converter.ConverterTypePair) bool {
+	return r.AllowedConverteTypeMaps.Exists(func(ctp *converter.ConverterTypePair) bool {
+
+		return ctp.SourceType == pair.SourceType && ctp.TargetType == pair.TargetType
+	})
 }
 
 func (r *ImagickConverter) Destory() {

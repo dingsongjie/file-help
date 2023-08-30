@@ -1,0 +1,99 @@
+definitions:
+  converter.ConvertByGavingKeyRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/converter.ConvertByGavingKeyRequestItem'
+        maxItems: 10
+        minItems: 1
+        type: array
+    type: object
+  converter.ConvertByGavingKeyRequestItem:
+    type: object
+  converter.ConvertByGavingKeyResponse:
+    type: object
+  models.AclError:
+    properties:
+      code:
+        type: string
+      details:
+        type: string
+      message:
+        type: string
+      requestStack:
+        type: string
+      validationErrors:
+        items:
+          $ref: '#/definitions/models.ValidationError'
+        type: array
+    type: object
+  models.CommonErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/models.AclError'
+    type: object
+  models.ValidationError:
+    properties:
+      members:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /GetFisrtImageByGavingKey:
+    post:
+      consumes:
+      - application/json
+      description: ConvertByGavingKeyRequest
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/converter.ConvertByGavingKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/converter.ConvertByGavingKeyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CommonErrorResponse'
+      summary: ConvertByGavingKeyRequest
+      tags:
+      - ConvertByGavingKeyRequest
+  /GetPdfByGavingKey:
+    post:
+      consumes:
+      - application/json
+      description: ConvertByGavingKeyRequest
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/converter.ConvertByGavingKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/converter.ConvertByGavingKeyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CommonErrorResponse'
+      summary: ConvertByGavingKeyRequest
+      tags:
+      - ConvertByGavingKeyRequest
+swagger: "2.0"

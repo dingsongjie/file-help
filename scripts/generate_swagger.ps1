@@ -1,0 +1,1 @@
+swag init -d .\website\ -g file_help.go -o api/swag

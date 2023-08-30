@@ -7,13 +7,13 @@ import (
 	"os/signal"
 	"time"
 
-	routers "github.com/dingsongjie/file-help/website/routes"
 	"github.com/joho/godotenv"
 	"github.com/namsral/flag"
 	"go.uber.org/zap"
 	"www.github.com/dingsongjie/file-help/configs"
 	"www.github.com/dingsongjie/file-help/pkg/converter/Initialize"
 	"www.github.com/dingsongjie/file-help/pkg/log"
+	"www.github.com/dingsongjie/file-help/website/routers"
 
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -31,7 +31,7 @@ func main() {
 	log.Initialise()
 	godotenv.Load(".env")
 	flag.StringVar(&ginMode, "gin-mode", "release", "Gin mode")
-	flag.StringVar(&s3ServiceUrl, "s3-service-url", "", "s3 service url")
+	flag.StringVar(&s3ServiceUrl, "s3-endpoint", "", "s3 service url")
 	flag.StringVar(&s3AccessKey, "s3-access-key", "", "s3 account accesskey")
 	flag.StringVar(&s3SecretKey, "s3-secret-key", "", "s3 account secretkey")
 	flag.StringVar(&s3BacketName, "s3-bucket-name", "", "s3 target bucket name")
@@ -39,6 +39,7 @@ func main() {
 	configs.ConfigGin(flag.CommandLine)
 	configs.ConfigS3(flag.CommandLine)
 	Initialize.RegisterConverters()
+	defer Initialize.DestoryConverters()
 	logger := log.Logger
 	defer logger.Sync()
 
@@ -53,7 +54,6 @@ func main() {
 	// Logs all panic to error log
 	//   - stack means whether output the stack info.
 	r.Use(ginzap.RecoveryWithZap(logger, true))
-
 	routers.AddRouter(r)
 
 	srv := &http.Server{

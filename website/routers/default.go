@@ -22,7 +22,8 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 			"status": "health",
 		})
 	})
-	r.POST("/converter/ConverteFisrtPageToGavingKey", controllers.ConverteFisrtPageToGavingKey)
+	r.POST("/converter/GetFisrtImageByGavingKey", controllers.GetFisrtImageByGavingKey)
+	r.POST("/converter/GetPdfByGavingKey", controllers.GetPdfByGavingKey)
 
 	// swagger
 	docs.SwaggerInfo.BasePath = "/"

@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/MrSaints/go-ghostscript/ghostscript"
+	"github.com/STRockefeller/go-linq"
 
 	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/log"
@@ -17,7 +18,7 @@ var (
 
 type AiConverter struct {
 	internalGSInstance      *ghostscript.Ghostscript
-	AllowedConverteTypeMaps []*converter.ConverterTypePair
+	AllowedConverteTypeMaps linq.Linq[*converter.ConverterTypePair]
 }
 
 func NewConverter() *AiConverter {
@@ -138,6 +139,13 @@ func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
 		r.internalGSInstance = nil
 	}()
 	return nil
+}
+
+func (r *AiConverter) CanHandle(pair converter.ConverterTypePair) bool {
+	return r.AllowedConverteTypeMaps.Exists(func(ctp *converter.ConverterTypePair) bool {
+
+		return ctp.SourceType == pair.SourceType && ctp.TargetType == pair.TargetType
+	})
 }
 func (r *AiConverter) Destory() {
 	log.Logger.Info("AiConverter destoryed")

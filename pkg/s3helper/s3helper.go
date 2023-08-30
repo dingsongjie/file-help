@@ -22,7 +22,12 @@ var (
 	mu   sync.Mutex
 )
 
-type S3Helper struct {
+type S3Helper interface {
+	DownLoadAndReturnLocalPath(fileKey string) (*LocalFileHandle, error)
+	Upload(localPath string, fileKey string) (err error)
+}
+
+type S3DefaultHelper struct {
 	bucketName string
 	session    *client.ConfigProvider
 	downloader s3manageriface.DownloaderAPI
@@ -30,9 +35,9 @@ type S3Helper struct {
 	tempPath   string
 }
 
-func NewS3Helper(endpoint, secretKey, accessKey, bucketName string) (*S3Helper, error) {
-	sess := safelyCreateOrGetSession(endpoint, secretKey, accessKey, bucketName)
-	instance := &S3Helper{
+func NewS3Helper(endpoint, accessKey, secretKey, bucketName string) (S3Helper, error) {
+	sess := safelyCreateOrGetSession(endpoint, accessKey, secretKey, bucketName)
+	instance := &S3DefaultHelper{
 		bucketName: bucketName,
 		session:    sess,
 		downloader: s3manager.NewDownloader(*sess),
@@ -42,7 +47,7 @@ func NewS3Helper(endpoint, secretKey, accessKey, bucketName string) (*S3Helper, 
 	return instance, nil
 }
 
-func safelyCreateOrGetSession(endpoint, secretKey, accessKey, bucketName string) *client.ConfigProvider {
+func safelyCreateOrGetSession(endpoint, accessKey, secretKey, bucketName string) *client.ConfigProvider {
 	if sess == nil {
 		mu.Lock()
 		if sess == nil {
@@ -58,7 +63,7 @@ func safelyCreateOrGetSession(endpoint, secretKey, accessKey, bucketName string)
 	return &sess
 }
 
-func (r *S3Helper) DownLoadAndReturnLocalPath(fileKey string) (*LocalFileHandle, error) {
+func (r *S3DefaultHelper) DownLoadAndReturnLocalPath(fileKey string) (*LocalFileHandle, error) {
 	filename := path.Join(r.tempPath, fileKey)
 	var (
 		f   *os.File = nil
@@ -89,7 +94,7 @@ func (r *S3Helper) DownLoadAndReturnLocalPath(fileKey string) (*LocalFileHandle,
 	return &handle, nil
 }
 
-func (r S3Helper) Upload(localPath string, fileKey string) (err error) {
+func (r S3DefaultHelper) Upload(localPath string, fileKey string) (err error) {
 	f, err := os.Open(localPath)
 	if err != nil {
 		return err

@@ -49,10 +49,10 @@ func (r *mockedUploader) UploadWithContext(ctx aws.Context, input *s3manager.Upl
 	return output, args.Error(1)
 }
 
-func NewMockedS3Helper(downloader s3manageriface.DownloaderAPI, uploader s3manageriface.UploaderAPI, tempPath string) (*S3Helper, error) {
+func NewMockedS3Helper(downloader s3manageriface.DownloaderAPI, uploader s3manageriface.UploaderAPI, tempPath string) (S3Helper, error) {
 	sess := safelyCreateOrGetSession("https://test.com", "test", "test", "test-bucket")
 	bucketName := "test-bucket"
-	instance := &S3Helper{
+	instance := &S3DefaultHelper{
 		bucketName: bucketName,
 		session:    sess,
 		downloader: downloader,
@@ -76,8 +76,10 @@ func createFileAndReturnFile(fullPath string) (*os.File, error) {
 
 func TestNewS3Helper(t *testing.T) {
 	assert := assert.New(t)
-	instance, err := NewS3Helper("https://test.com", "test", "test", "test-bucket")
+	inter, err := NewS3Helper("https://test.com", "test", "test", "test-bucket")
 	assert.Nil(err)
+	instance, ok := inter.(*S3DefaultHelper)
+	assert.True(ok)
 	assert.Equal("test-bucket", instance.bucketName)
 	assert.NotNil(instance.downloader)
 	assert.NotNil(instance.uploader)
@@ -184,6 +186,8 @@ func TestUpload(t *testing.T) {
 	t.Run("upload exist file", func(t *testing.T) {
 		uploader := new(mockedUploader)
 		mockedS3Helper, _ := NewMockedS3Helper(nil, uploader, dir)
+		instance, ok := mockedS3Helper.(*S3DefaultHelper)
+		assert.True(ok)
 		err := os.MkdirAll(path.Dir(fullPath), 0770)
 		assert.Nil(err)
 		file, err := os.Create(fullPath)
@@ -194,7 +198,7 @@ func TestUpload(t *testing.T) {
 			Return(&s3manager.UploadOutput{}, nil).
 			Run(func(args mock.Arguments) {
 				input := args.Get(0).(*s3manager.UploadInput)
-				assert.Equal(mockedS3Helper.bucketName, *input.Bucket)
+				assert.Equal(instance.bucketName, *input.Bucket)
 				assert.Equal(key, *input.Key)
 				buffer := make([]byte, 100)
 				input.Body.Read(buffer)
@@ -213,11 +217,13 @@ func TestUpload(t *testing.T) {
 	t.Run("upload not exist file", func(t *testing.T) {
 		uploader := new(mockedUploader)
 		mockedS3Helper, _ := NewMockedS3Helper(nil, uploader, dir)
+		instance, ok := mockedS3Helper.(*S3DefaultHelper)
+		assert.True(ok)
 		uploader.On("Upload", mock.Anything).
 			Return(&s3manager.UploadOutput{}, nil).
 			Run(func(args mock.Arguments) {
 				input := args.Get(0).(*s3manager.UploadInput)
-				assert.Equal(mockedS3Helper.bucketName, input.Bucket)
+				assert.Equal(instance.bucketName, input.Bucket)
 				assert.Equal(key, input.Key)
 				buffer := make([]byte, 100)
 				input.Body.Read(buffer)

@@ -1,21 +1,32 @@
 package converter
 
-import "strings"
-
-type ConverteFirstAndReturnS3KeyRequest struct {
-	Items []ConverteFirstAndReturnS3KeyItem `validate:"max=50,min=1"`
+type ConvertByGavingKeyRequest struct {
+	Items []ConvertByGavingKeyRequestItem `validate:"max=10,min=1"`
 }
 
-type ConverteFirstAndReturnS3KeyItem struct {
+type ConvertByGavingKeyRequestItem struct {
 	sourceKey string `validate:"required"`
 	targetKey string `validate:"required"`
 }
 
-func (r *ConverteFirstAndReturnS3KeyItem) Handle() (bool, error) {
-	strings.Split(r.sourceKey, ".")
+type ConvertByGavingKeyResponseItem struct {
+	SourceKey string `validate:"required"`
+	IsSucceed bool   `validate:"required"`
+	Message   string
 }
-func ()
 
-func (r *ConverteFirstAndReturnS3KeyItem) validate() (bool, error) {
+type ConvertByGavingKeyResponse struct {
+	items        []ConvertByGavingKeyResponseItem `validate:"required"`
+	isAllSucceed bool                             `validate:"required"`
+}
 
+func NewGetFisrtImageByGavingKeyResponse() *ConvertByGavingKeyResponse {
+	return &ConvertByGavingKeyResponse{isAllSucceed: true}
+}
+
+func (r *ConvertByGavingKeyResponse) AddItem(item *ConvertByGavingKeyResponseItem) {
+	r.items = append(r.items, *item)
+	if !item.IsSucceed {
+		r.isAllSucceed = false
+	}
 }

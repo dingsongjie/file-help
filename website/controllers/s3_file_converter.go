@@ -1,45 +1,48 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"www.github.com/dingsongjie/file-help/configs"
 	"www.github.com/dingsongjie/file-help/website/models/converter"
 )
 
 // @BasePath /converter
-// ConverteFirstAndReturnS3KeyRequest
-// @Summary ConverteFirstAndReturnS3KeyRequest
-// @Description ConverteFirstAndReturnS3KeyRequest
-// @Tags ConverteFirstAndReturnS3KeyRequest
+// ConvertByGavingKeyRequest
+// @Summary ConvertByGavingKeyRequest
+// @Description ConvertByGavingKeyRequest
+// @Tags ConvertByGavingKeyRequest
 // @Accept json
 // @Produce json
-// @param request body converter.ConverteFirstAndReturnS3KeyRequest true "request"
-// @Success 200  {object} model.CommandSuccessResponse
-// @Failure 400  {object} model.CommonErrorResponse
-// @Router /ConverteFisrtPageToGavingKey [post]
-func ConverteFisrtPageToGavingKey(c *gin.Context) {
-	var request = converter.ConverteFirstAndReturnS3KeyRequest{}
+// @param request body converter.ConvertByGavingKeyRequest true "request"
+// @Success 200  {object} converter.ConvertByGavingKeyResponse
+// @Failure 400  {object} models.CommonErrorResponse
+// @Router /GetFisrtImageByGavingKey [post]
+func GetFisrtImageByGavingKey(c *gin.Context) {
+	var request = converter.ConvertByGavingKeyRequest{}
 	if err := c.BindJSON(&request); err != nil {
 		return
 	}
-	info, err := getNewPathInfo(requestUser.Paths)
+	handler, err := converter.NewGetFisrtImageByGavingKeyRequestHandler(configs.S3Endpoint, configs.S3AccessKey, configs.S3SecretKey, configs.S3BacketName)
 	if err != nil {
-		log.Logger.Error(err.Error())
-		c.AbortWithStatus(400)
+		c.AbortWithError(500, err)
 	}
-	err = setUserInfo(requestUser.Paths, info)
-	if err != nil {
-		log.Logger.Error(err.Error())
-		c.AbortWithStatus(400)
-	} else {
-		c.JSON(http.StatusOK, info)
-	}
+	GetFisrtImageByGavingKeyResponse := handler.Handle(&request)
+	c.JSON(http.StatusOK, GetFisrtImageByGavingKeyResponse)
 }
 
-func convertCore(request converter.ConverteFirstAndReturnS3KeyRequest) {
-	for i := range request.Items {
-
-	}
+// @BasePath /converter
+// ConvertByGavingKeyRequest
+// @Summary ConvertByGavingKeyRequest
+// @Description ConvertByGavingKeyRequest
+// @Tags ConvertByGavingKeyRequest
+// @Accept json
+// @Produce json
+// @param request body converter.ConvertByGavingKeyRequest true "request"
+// @Success 200  {object} converter.ConvertByGavingKeyResponse
+// @Failure 400  {object} models.CommonErrorResponse
+// @Router /GetPdfByGavingKey [post]
+func GetPdfByGavingKey(c *gin.Context) {
+	GetFisrtImageByGavingKey(c)
 }
