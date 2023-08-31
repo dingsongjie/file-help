@@ -54,7 +54,7 @@ node('jnlp') {
           skipDeploy = true
           SERVER_URL="registry.powertradepro.com"
           NAMESPACE="container_group/images"
-		  REGISTRY_AUTH_ID = 'huaweicloud-registry-auth'
+		  REGISTRY_AUTH_ID = 'gitlab-registry-auth'
         }
         else{
           echo "not supported"
