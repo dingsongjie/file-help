@@ -29,6 +29,7 @@ node('jnlp') {
             extensions: scm.extensions,
             userRemoteConfigs: scm.userRemoteConfigs
         ])
+        
         echo ref
         if (  ref == "refs/heads/dev" ) {
           tag = "latest"
