@@ -28,7 +28,7 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 			"status": "health",
 		})
 	})
-	fileheler := r.Group("/fileheler")
+	fileheler := r.Group("/filehelper")
 	{
 		fileheler.POST("/Converter/GetFisrtImageByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetFisrtImageByGavingKey)
 		fileheler.POST("/Converter/GetPdfByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetPdfByGavingKey)
@@ -38,8 +38,6 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 
 	// swagger
 	docs.SwaggerInfo.BasePath = "/filehelper"
-
-	r.GET("/filehelper/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }
