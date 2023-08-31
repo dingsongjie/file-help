@@ -52,7 +52,8 @@ node('jnlp') {
           buildId="${tag}.${buildId}"
           echo buildId
           skipDeploy = true
-          SERVER_URL="swr.cn-east-3.myhuaweicloud.com"
+          SERVER_URL="registry.powertradepro.com"
+          NAMESPACE="container_group/images"
 		  REGISTRY_AUTH_ID = 'huaweicloud-registry-auth'
         }
         else{
