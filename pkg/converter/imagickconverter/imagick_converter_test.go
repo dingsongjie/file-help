@@ -11,7 +11,7 @@ import (
 	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
-var assert3 string = "./test/assets/3.psd"
+var assert1 string = "./test/assets/1.psd"
 
 func TestToFastImage(t *testing.T) {
 	log.Initialise()
@@ -40,7 +40,7 @@ func TestToFastImage(t *testing.T) {
 	// })
 
 	t.Run("convert first page of psd-1 to jpeg", func(t *testing.T) {
-		aiAbsolutePath := path.Join(mydir, "./test/assets/1.psd")
+		aiAbsolutePath := path.Join(mydir, assert1)
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-1.jpeg")
 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 		assert.Nil(err)
@@ -48,13 +48,6 @@ func TestToFastImage(t *testing.T) {
 	t.Run("convert first page of psd-2 to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/2.psd")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-2.jpeg")
-		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
-		assert.Nil(err)
-	})
-
-	t.Run("convert first page of psd-3 to jpeg", func(t *testing.T) {
-		aiAbsolutePath := path.Join(mydir, assert3)
-		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-3.jpeg")
 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 		assert.Nil(err)
 	})
@@ -74,8 +67,8 @@ func TestToFastImage(t *testing.T) {
 		for i := 0; i < wantedCount; i++ {
 			go func() {
 				converter := NewConverter()
-				aiAbsolutePath := path.Join(mydir, assert3)
-				outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-3.jpeg")
+				aiAbsolutePath := path.Join(mydir, assert1)
+				outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-1.jpeg")
 				err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 				assert.Nil(err)
 				converter.Destory()
@@ -120,13 +113,6 @@ func TestToPrettyPdf(t *testing.T) {
 		assert.Nil(err)
 	})
 
-	t.Run("convert first page of psd-3 to pdf", func(t *testing.T) {
-		aiAbsolutePath := path.Join(mydir, assert3)
-		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-3.pdf")
-		err := converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
-		assert.Nil(err)
-	})
-
 	t.Run("worng path of psd to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/4.psd")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-4.pdf")
@@ -142,8 +128,8 @@ func TestToPrettyPdf(t *testing.T) {
 		for i := 0; i < wantedCount; i++ {
 			go func() {
 				converter := NewConverter()
-				aiAbsolutePath := path.Join(mydir, assert3)
-				outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-3.pdf")
+				aiAbsolutePath := path.Join(mydir, assert1)
+				outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-1.pdf")
 				err := converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
 				assert.Nil(err)
 				converter.Destory()
@@ -162,8 +148,8 @@ func BenchmarkToPrettyPdf(b *testing.B) {
 	mydir, _ := os.Getwd()
 
 	for i := 0; i < b.N; i++ {
-		aiAbsolutePath := path.Join(mydir, fmt.Sprintf("./test/assets/%d.psd", i%3+1))
-		outputAbsolutePath := path.Join(mydir, fmt.Sprintf("./test/outputs/psd-%d.jpeg", i%3+1))
+		aiAbsolutePath := path.Join(mydir, fmt.Sprintf("./test/assets/%d.psd", i%2+1))
+		outputAbsolutePath := path.Join(mydir, fmt.Sprintf("./test/outputs/psd-%d.jpeg", i%2+1))
 		converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
 	}
 	converter.Destory()

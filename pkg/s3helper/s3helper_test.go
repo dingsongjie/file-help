@@ -160,19 +160,20 @@ func TestDownLoadAndReturnLocalPath(t *testing.T) {
 		handle.Destory()
 	})
 
-	t.Run("wrong dir", func(t *testing.T) {
-		downloader := new(mockedDownloader)
-		dir = os.TempDir() + "........./......./"
-		err := os.MkdirAll(path.Dir(fullPath), 0770)
-		assert.Nil(err)
-		file, err := os.Create(fullPath)
-		assert.Nil(err)
-		file.Write([]byte{'A', 'B'})
-		file.Close()
-		mockedS3Helper, _ := NewMockedS3Helper(downloader, nil, dir)
-		_, err = mockedS3Helper.DownLoadAndReturnLocalPath(key)
-		assert.NotNil(err)
-	})
+	//only windows
+	// t.Run("wrong dir", func(t *testing.T) {
+	// 	downloader := new(mockedDownloader)
+	// 	dir = os.TempDir() + "........./......./"
+	// 	err := os.MkdirAll(path.Dir(fullPath), 0770)
+	// 	assert.Nil(err)
+	// 	file, err := os.Create(fullPath)
+	// 	assert.Nil(err)
+	// 	file.Write([]byte{'A', 'B'})
+	// 	file.Close()
+	// 	mockedS3Helper, _ := NewMockedS3Helper(downloader, nil, dir)
+	// 	_, err = mockedS3Helper.DownLoadAndReturnLocalPath(key)
+	// 	assert.NotNil(err)
+	// })
 
 }
 

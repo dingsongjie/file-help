@@ -1,0 +1,1 @@
+docker build . -f ./build/dockerfile -t swr.cn-east-3.myhuaweicloud.com/lumi/file-helper-api --progress=plain

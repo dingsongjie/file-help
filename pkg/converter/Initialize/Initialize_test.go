@@ -7,6 +7,7 @@ import (
 	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/converter/aiconverter"
 	"www.github.com/dingsongjie/file-help/pkg/converter/imagickconverter"
+	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 func TestRegisterConverters(t *testing.T) {
@@ -20,6 +21,7 @@ func TestRegisterConverters(t *testing.T) {
 }
 
 func TestDestoryConverters(t *testing.T) {
+	log.Initialise()
 	RegisterConverters()
 	DestoryConverters()
 }
