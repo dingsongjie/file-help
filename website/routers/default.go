@@ -23,22 +23,19 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 	ginoauth2.VarianceTimer = 300 * time.Millisecond // defaults to 30s
 	ginoauth2.ClientId = configs.OIDCClientId
 	ginoauth2.ClientSecret = configs.OIDCClientSecret
-
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "health",
 		})
 	})
-	r.POST("/Converter/GetFisrtImageByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetFisrtImageByGavingKey)
-	r.POST("/Converter/GetPdfByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetPdfByGavingKey)
+	fileheler := r.Group("/fileheler")
+	{
+		fileheler.POST("/Converter/GetFisrtImageByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetFisrtImageByGavingKey)
+		fileheler.POST("/Converter/GetPdfByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetPdfByGavingKey)
+	}
 
 	// swagger
-	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.BasePath = "/fileheler"
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

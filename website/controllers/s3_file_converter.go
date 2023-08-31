@@ -9,7 +9,6 @@ import (
 )
 
 // @Security BearerAuth
-// @BasePath /
 // GetFisrtImageByGavingKey
 // @Summary GetFisrtImageByGavingKey
 // @Description GetFisrtImageByGavingKey
@@ -33,7 +32,6 @@ func GetFisrtImageByGavingKey(c *gin.Context) {
 	c.JSON(http.StatusOK, GetFisrtImageByGavingKeyResponse)
 }
 
-// @BasePath /
 // GetPdfByGavingKey
 // @Summary GetPdfByGavingKey
 // @Description GetPdfByGavingKey
