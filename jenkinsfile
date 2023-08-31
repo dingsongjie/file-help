@@ -25,7 +25,7 @@ node('jnlp') {
         scmVars = checkout([
             $class: 'GitSCM',
             branches: [[name: ref]],
-            doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+            doGenerateSubmoduleConfigurations: true,
             extensions: scm.extensions+ [[$class: 'SubmoduleOption', parentCredentials: false]],,
             userRemoteConfigs: scm.userRemoteConfigs
         ])
