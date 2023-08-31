@@ -35,7 +35,7 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 	}
 
 	// swagger
-	docs.SwaggerInfo.BasePath = "/fileheler"
+	docs.SwaggerInfo.BasePath = "/filehelper"
 
 	r.GET("/filehelper/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
