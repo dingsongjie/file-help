@@ -1,0 +1,1 @@
+docker run -p 8080:8080  --env-file scripts/env.list swr.cn-east-3.myhuaweicloud.com/lumi/file-helper-api
