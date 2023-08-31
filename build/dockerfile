@@ -1,7 +1,7 @@
 ############################
 # STEP 1 build executable binary
 ############################
-FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base AS builder
+FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base:release AS builder
 
 # Install dependencies
 WORKDIR /usr/src/app
