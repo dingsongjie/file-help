@@ -32,6 +32,8 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 	{
 		fileheler.POST("/Converter/GetFisrtImageByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetFisrtImageByGavingKey)
 		fileheler.POST("/Converter/GetPdfByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetPdfByGavingKey)
+		fileheler.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	}
 
 	// swagger
