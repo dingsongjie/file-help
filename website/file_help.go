@@ -25,12 +25,13 @@ import (
 func main() {
 	var (
 		ginMode, s3ServiceUrl, s3AccessKey, s3SecretKey, s3BacketName, oidcClientId, oidcClientSecret, oidcAuthority,
-		oidcScope, oidcAudience, oidcIntrospectEndpoint string
+		oidcScope, oidcAudience, oidcIntrospectEndpoint, baseUrl string
 	)
 
 	log.Initialise()
 	godotenv.Load(".env")
 	flag.StringVar(&ginMode, "gin-mode", "release", "Gin mode")
+	flag.StringVar(&baseUrl, "base-url", "", "base rul")
 	flag.StringVar(&s3ServiceUrl, "s3-endpoint", "", "s3 service url")
 	flag.StringVar(&s3AccessKey, "s3-access-key", "", "s3 account accesskey")
 	flag.StringVar(&s3SecretKey, "s3-secret-key", "", "s3 account secretkey")
@@ -42,6 +43,7 @@ func main() {
 	flag.StringVar(&oidcScope, "oidc-scope", "", "oidc scope")
 	flag.StringVar(&oidcAudience, "oidc-audience", "", "oidc audience")
 	flag.StringVar(&oidcIntrospectEndpoint, "oidc-introspect-endpoint", "", "oidc introspect enpoint")
+
 	flag.Parse()
 	configs.ConfigGin(flag.CommandLine)
 	configs.ConfigS3(flag.CommandLine)

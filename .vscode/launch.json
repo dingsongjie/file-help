@@ -22,7 +22,8 @@
                 "OIDC_AUTHORITY": "https://account.test.powertradepro.com/useridentity",
                 "OIDC_SCOPE": "internal_service",
                 "OIDC_AUDIENCE": "pt_apis",
-                "OIDC_INTROSPECT_ENDPOINT": "https://account.test.powertradepro.com/useridentity/connect/introspect"
+                "OIDC_INTROSPECT_ENDPOINT": "https://account.test.powertradepro.com/useridentity/connect/introspect",
+                "BASE_URL": "/"
             }
         }
     ]

@@ -1,4 +1,5 @@
 assets/*
 outputs/*
-.vscode/launch.json
+.vscode
 *.exe
+.vscode/launch.json
