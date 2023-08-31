@@ -23,7 +23,7 @@ RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o /usr/src/app/app ./webs
 RUN go test ./...
 
 
-FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base AS final
+FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base:release AS final
 
 COPY --from=builder /usr/src/app/app .
 
