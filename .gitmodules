@@ -1,0 +1,8 @@
+[submodule "gin-oauth2"]
+	path = third_party/forked/gin-oauth2
+	url = https://github.com/dingsongjie/gin-oauth2
+	branch = master
+[submodule "go-ghostscript"]
+	path = third_party/forked/go-ghostscript
+	url = https://github.com/dingsongjie/go-ghostscript
+	branch = master    
