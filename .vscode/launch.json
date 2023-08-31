@@ -16,7 +16,13 @@
                 "S3_ENDPOINT": "https://minio.lumilegend.cn/",
                 "S3_ACCESS_KEY": "admin",
                 "S3_SECRET_KEY": "nbqc@123",
-                "S3_BUCKET_NAME": "erp"
+                "S3_BUCKET_NAME": "erp",
+                "OIDC_CLIENT_ID": "pt_ai",
+                "OIDC_CLIENT_SECRET": "permission_manage",
+                "OIDC_AUTHORITY": "https://account.test.powertradepro.com/useridentity",
+                "OIDC_SCOPE": "internal_service",
+                "OIDC_AUDIENCE": "pt_apis",
+                "OIDC_INTROSPECT_ENDPOINT": "https://account.test.powertradepro.com/useridentity/connect/introspect"
             }
         }
     ]

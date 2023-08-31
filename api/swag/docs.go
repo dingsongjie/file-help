@@ -18,6 +18,11 @@ const docTemplate = `{
     "paths": {
         "/Converter/GetFisrtImageByGavingKey": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "GetFisrtImageByGavingKey",
                 "consumes": [
                     "application/json"
@@ -209,6 +214,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

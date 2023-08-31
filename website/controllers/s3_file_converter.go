@@ -8,6 +8,7 @@ import (
 	"www.github.com/dingsongjie/file-help/website/models/converter"
 )
 
+// @Security BearerAuth
 // @BasePath /
 // GetFisrtImageByGavingKey
 // @Summary GetFisrtImageByGavingKey

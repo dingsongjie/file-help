@@ -99,6 +99,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.CommonErrorResponse'
+      security:
+      - BearerAuth: []
       summary: GetFisrtImageByGavingKey
       tags:
       - GetFisrtImageByGavingKey
@@ -128,4 +130,9 @@ paths:
       summary: GetPdfByGavingKey
       tags:
       - GetPdfByGavingKey
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

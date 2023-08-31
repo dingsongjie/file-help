@@ -72,11 +72,13 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 	// 这里目前只有两种 先做简单判断
 	if pair.TargetType == "pdf" {
 		err := firstHandler.ToPrettyPdf(fileHandler.Path, generateFilePath)
+		defer os.Remove(generateFilePath)
 		if err != nil {
 			return err
 		}
 	} else {
 		err := firstHandler.ToFastImage(fileHandler.Path, generateFilePath)
+		defer os.Remove(generateFilePath)
 		if err != nil {
 			return err
 		}

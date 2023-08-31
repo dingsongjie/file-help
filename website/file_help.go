@@ -19,13 +19,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	var (
-		ginMode      string
-		s3ServiceUrl string
-		s3AccessKey  string
-		s3SecretKey  string
-		s3BacketName string
+		ginMode, s3ServiceUrl, s3AccessKey, s3SecretKey, s3BacketName, oidcClientId, oidcClientSecret, oidcAuthority,
+		oidcScope, oidcAudience, oidcIntrospectEndpoint string
 	)
 
 	log.Initialise()
@@ -35,9 +35,17 @@ func main() {
 	flag.StringVar(&s3AccessKey, "s3-access-key", "", "s3 account accesskey")
 	flag.StringVar(&s3SecretKey, "s3-secret-key", "", "s3 account secretkey")
 	flag.StringVar(&s3BacketName, "s3-bucket-name", "", "s3 target bucket name")
+
+	flag.StringVar(&oidcClientId, "oidc-client-id", "", "oidc clientId")
+	flag.StringVar(&oidcClientSecret, "oidc-client-secret", "", "oidc clientSecret")
+	flag.StringVar(&oidcAuthority, "oidc-authority", "", "oidc authority")
+	flag.StringVar(&oidcScope, "oidc-scope", "", "oidc scope")
+	flag.StringVar(&oidcAudience, "oidc-audience", "", "oidc audience")
+	flag.StringVar(&oidcIntrospectEndpoint, "oidc-introspect-endpoint", "", "oidc introspect enpoint")
 	flag.Parse()
 	configs.ConfigGin(flag.CommandLine)
 	configs.ConfigS3(flag.CommandLine)
+	configs.ConfigIdentityServer(flag.CommandLine)
 	Initialize.RegisterConverters()
 	defer Initialize.DestoryConverters()
 	logger := log.Logger
@@ -45,6 +53,9 @@ func main() {
 
 	gin.SetMode(configs.GinMode)
 	r := gin.Default()
+
+	// store := cookie.NewStore([]byte("secret"))
+	// r.Use(sessions.Sessions("mysession", store))
 	// Add a ginzap middleware, which:
 	//   - Logs all requests, like a combined access and error log.
 	//   - Logs to stdout.
