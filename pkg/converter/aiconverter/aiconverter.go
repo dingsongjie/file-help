@@ -126,6 +126,7 @@ func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
 		"-dBandBufferSpace=200000000",
 		"-sBandListStorage=memory",
 		"-dNoOutputFonts",
+		"-dPDFA",
 		"-r300",
 		"-sOutputFile=" + outputFile,
 		inputFile,
