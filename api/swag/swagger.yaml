@@ -59,6 +59,13 @@ definitions:
           $ref: '#/definitions/models.ValidationError'
         type: array
     type: object
+  models.CommandResponse:
+    properties:
+      isSuccessd:
+        type: boolean
+      message:
+        type: string
+    type: object
   models.CommonErrorResponse:
     properties:
       error:
@@ -71,6 +78,28 @@ definitions:
           type: string
         type: array
       message:
+        type: string
+    type: object
+  tar.PackRequest:
+    properties:
+      fileKey:
+        type: string
+      isGziped:
+        type: boolean
+      items:
+        items:
+          $ref: '#/definitions/tar.PackRequestItem'
+        type: array
+    type: object
+  tar.PackRequestItem:
+    properties:
+      fileKey:
+        type: string
+      fileName:
+        description: 文件夹层级用"/"表示
+        type: string
+      lastModifyTime:
+        description: ISO 8601 时间
         type: string
     type: object
 info:
@@ -130,6 +159,34 @@ paths:
       summary: GetPdfByGavingKey
       tags:
       - GetPdfByGavingKey
+  /Tar/Pack:
+    post:
+      consumes:
+      - application/json
+      description: PackByGavingKey
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tar.PackRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CommandResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CommonErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: PackByGavingKey
+      tags:
+      - PackByGavingKey
 securityDefinitions:
   BearerAuth:
     in: header

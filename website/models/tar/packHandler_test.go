@@ -162,3 +162,29 @@ func TestPackHandlerHandle(t *testing.T) {
 		assert.Equal("pack error", response.Message)
 	})
 }
+
+func BenchmarkPackHandlerHandle(b *testing.B) {
+	handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
+	mockedS3Helper := new(mockedS3Helper)
+	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Run(func(args mock.Arguments) {
+		time.Sleep(300 * time.Microsecond)
+	}).Return(&s3helper.LocalFileHandle{Path: filePath1, IsDestory: false}, nil)
+	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
+		time.Sleep(400 * time.Microsecond)
+	}).Return(nil)
+	handler.s3Helper = mockedS3Helper
+	mockedTarHelper := new(mockedTarHelper)
+	mockedTarHelper.On("Pack", mock.Anything).Run(func(args mock.Arguments) {
+		time.Sleep(10 * time.Microsecond)
+	}).Return(nil)
+	handler.tarHelper = mockedTarHelper
+
+	request := PackRequest{FileKey: "/path1/1.tar", IsGziped: false}
+	var items []PackRequestItem
+	items = append(items, PackRequestItem{FileKey: fileKey1, FileName: fileName1, LastModifyTime: time.Now()})
+	items = append(items, PackRequestItem{FileKey: fileKey2, FileName: fileName2, LastModifyTime: time.Now()})
+	items = append(items, PackRequestItem{FileKey: fileKey3, FileName: fileName3, LastModifyTime: time.Now()})
+	items = append(items, PackRequestItem{FileKey: fileKey4, FileName: fileName4, LastModifyTime: time.Now()})
+	request.Items = &items
+	handler.Handle(&request)
+}
