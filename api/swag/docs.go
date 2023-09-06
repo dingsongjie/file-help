@@ -100,6 +100,51 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/Tar/Pack": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "PackByGavingKey",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PackByGavingKey"
+                ],
+                "summary": "PackByGavingKey",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tar.PackRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CommandResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CommonErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -193,6 +238,17 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CommandResponse": {
+            "type": "object",
+            "properties": {
+                "isSuccessd": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CommonErrorResponse": {
             "type": "object",
             "properties": {
@@ -211,6 +267,39 @@ const docTemplate = `{
                     }
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "tar.PackRequest": {
+            "type": "object",
+            "properties": {
+                "fileKey": {
+                    "type": "string"
+                },
+                "isGziped": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tar.PackRequestItem"
+                    }
+                }
+            }
+        },
+        "tar.PackRequestItem": {
+            "type": "object",
+            "properties": {
+                "fileKey": {
+                    "type": "string"
+                },
+                "fileName": {
+                    "description": "文件夹层级用\"/\"表示",
+                    "type": "string"
+                },
+                "lastModifyTime": {
+                    "description": "ISO 8601 时间",
                     "type": "string"
                 }
             }

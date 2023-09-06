@@ -29,7 +29,7 @@ func NewGetFisrtImageByGavingKeyRequestHandler(endpoint, accessKey, secretKey, b
 	return &handler, nil
 }
 
-func (r GetFisrtImageByGavingKeyRequestHandler) Handle(request *ConvertByGavingKeyRequest) *ConvertByGavingKeyResponse {
+func (r *GetFisrtImageByGavingKeyRequestHandler) Handle(request *ConvertByGavingKeyRequest) *ConvertByGavingKeyResponse {
 	GetFisrtImageByGavingKeyResponse := NewGetFisrtImageByGavingKeyResponse()
 	items := linq.Linq[ConvertByGavingKeyRequestItem]{}
 	items.AddRange(request.Items)
@@ -92,14 +92,14 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) validateAndGetFileConverterPair(item *ConvertByGavingKeyRequestItem) (*converter.ConverterTypePair, error) {
 	sourceKeySplit := strings.Split(item.SourceKey, ".")
-	if len(sourceKeySplit) != 2 {
+	if len(sourceKeySplit) < 2 {
 		return nil, fmt.Errorf("wrong sourceKey, sourceKey:%s", item.SourceKey)
 	}
 	targetKeySplit := strings.Split(item.TargetKey, ".")
-	if len(targetKeySplit) != 2 {
+	if len(targetKeySplit) < 2 {
 		return nil, fmt.Errorf("wrong targetKey, targetKey:%s", item.TargetKey)
 	}
-	return &converter.ConverterTypePair{SourceType: sourceKeySplit[1], TargetType: targetKeySplit[1]}, nil
+	return &converter.ConverterTypePair{SourceType: sourceKeySplit[len(sourceKeySplit)-1], TargetType: targetKeySplit[len(targetKeySplit)-1]}, nil
 }
 
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) downloadSourceFile(key string) (*s3helper.LocalFileHandle, error) {

@@ -4,8 +4,9 @@ type CommonErrorResponse struct {
 	Error AclError
 }
 
-type CommandSuccessResponse struct {
+type CommandResponse struct {
 	IsSuccessd bool
+	Message    string
 }
 
 type AclError struct {
