@@ -32,6 +32,7 @@ func GetFisrtImageByGavingKey(c *gin.Context) {
 	c.JSON(http.StatusOK, GetFisrtImageByGavingKeyResponse)
 }
 
+// @Security BearerAuth
 // GetPdfByGavingKey
 // @Summary GetPdfByGavingKey
 // @Description GetPdfByGavingKey
