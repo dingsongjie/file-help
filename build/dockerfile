@@ -10,7 +10,6 @@ WORKDIR /usr/src/app
 # Using go get.
 COPY .  .
 RUN go mod download && go mod verify
-
 ARG TARGETOS
 ARG TARGETARCH
 ENV TARGETOS=linux
