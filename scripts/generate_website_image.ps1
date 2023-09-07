@@ -1,1 +1,1 @@
-docker build . -f ./build/dockerfile -t swr.cn-east-3.myhuaweicloud.com/lumi/file-helper-api --progress=plain
+docker build . -f ./build/dockerfile -t registry.powertradepro.com/container_group/images/file-helper-api:release --progress=plain

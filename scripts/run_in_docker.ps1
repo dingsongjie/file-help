@@ -1,1 +1,1 @@
-docker run -p 8080:8080  --env-file scripts/env.list swr.cn-east-3.myhuaweicloud.com/lumi/file-helper-api
+docker run -p 8080:8080  --env-file scripts/env.list -v 'C:\Users\admin\Documents\Tencent Files\3001989585\FileRecv\测试\AI_PDF:/imgs' registry.powertradepro.com/container_group/images/file-helper-api:release

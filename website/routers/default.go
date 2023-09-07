@@ -20,7 +20,7 @@ import (
 
 func AddRouter(r *gin.Engine) *gin.Engine {
 	oauth2Enpoint := oauth2.Endpoint{AuthURL: configs.OIDCIntrospectEndpoint}
-	ginoauth2.VarianceTimer = 300 * time.Millisecond // defaults to 30s
+	ginoauth2.VarianceTimer = 3000 * time.Millisecond // defaults to 30s
 	ginoauth2.ClientId = configs.OIDCClientId
 	ginoauth2.ClientSecret = configs.OIDCClientSecret
 	r.GET("/health", func(c *gin.Context) {
