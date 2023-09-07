@@ -156,6 +156,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.CommonErrorResponse'
+      security:
+      - BearerAuth: []
       summary: GetPdfByGavingKey
       tags:
       - GetPdfByGavingKey

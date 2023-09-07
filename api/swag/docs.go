@@ -63,6 +63,11 @@ const docTemplate = `{
         },
         "/Converter/GetPdfByGavingKey": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "GetPdfByGavingKey",
                 "consumes": [
                     "application/json"
