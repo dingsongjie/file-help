@@ -20,7 +20,7 @@ ENV GOOS=linux
 ENV PKG_CONFIG_PATH="/usr/lib/pkgconfig"
 ENV CC=gcc
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o /usr/src/app/app ./website
-#RUN go test ./...
+RUN go test ./...
 
 
 FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base:v1.4 AS final
