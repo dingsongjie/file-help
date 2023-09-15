@@ -2,6 +2,8 @@ package converter
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"testing"
 
 	"github.com/STRockefeller/go-linq"
@@ -158,6 +160,10 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
+		targetFilePath1 := path.Join(os.TempDir(), "generate", "img/1.jpeg")
+		targetFilePath2 := path.Join(os.TempDir(), "generate", "img/2.jpeg")
+		os.Create(targetFilePath1)
+		os.Create(targetFilePath2)
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.jpeg"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
 		response := handler.Handle(&request)
@@ -166,15 +172,21 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.True(response.Items[0].IsSucceed)
 		assert.Empty(response.Items[0].Message)
+		assert.Zero(response.Items[0].TargetFileSize)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.True(response.Items[1].IsSucceed)
 		assert.Empty(response.Items[1].Message)
+		assert.Zero(response.Items[1].TargetFileSize)
 	})
 
 	t.Run("convert to pdf success", func(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
+		targetFilePath1 := path.Join(os.TempDir(), "generate", "img/1.pdf")
+		targetFilePath2 := path.Join(os.TempDir(), "generate", "img/2.pdf")
+		os.Create(targetFilePath1)
+		os.Create(targetFilePath2)
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.pdf"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.pdf"})
 		response := handler.Handle(&request)
@@ -183,9 +195,11 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.True(response.Items[0].IsSucceed)
 		assert.Empty(response.Items[0].Message)
+		assert.Zero(response.Items[0].TargetFileSize)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.True(response.Items[1].IsSucceed)
 		assert.Empty(response.Items[1].Message)
+		assert.Zero(response.Items[1].TargetFileSize)
 	})
 
 	t.Run("download faild", func(t *testing.T) {

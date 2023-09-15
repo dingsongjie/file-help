@@ -10,9 +10,10 @@ type ConvertByGavingKeyRequestItem struct {
 }
 
 type ConvertByGavingKeyResponseItem struct {
-	SourceKey string `validate:"required"`
-	IsSucceed bool   `validate:"required"`
-	Message   string
+	SourceKey      string `validate:"required"`
+	IsSucceed      bool   `validate:"required"`
+	TargetFileSize int64
+	Message        string
 }
 
 type ConvertByGavingKeyResponse struct {
