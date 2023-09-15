@@ -217,6 +217,9 @@ const docTemplate = `{
                 },
                 "sourceKey": {
                     "type": "string"
+                },
+                "targetFileSize": {
+                    "type": "integer"
                 }
             }
         },

@@ -205,6 +205,9 @@
                 },
                 "sourceKey": {
                     "type": "string"
+                },
+                "targetFileSize": {
+                    "type": "integer"
                 }
             }
         },

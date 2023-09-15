@@ -41,53 +41,52 @@ func (r *GetFisrtImageByGavingKeyRequestHandler) Handle(request *ConvertByGaving
 }
 
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) Handle(item *ConvertByGavingKeyRequestItem) *ConvertByGavingKeyResponseItem {
-	err := r.HandleCore(item)
+	fileSize, err := r.HandleCore(item)
 	if err == nil {
-		return &ConvertByGavingKeyResponseItem{SourceKey: item.SourceKey, IsSucceed: true}
+		return &ConvertByGavingKeyResponseItem{SourceKey: item.SourceKey, IsSucceed: true, TargetFileSize: fileSize}
 	}
 	return &ConvertByGavingKeyResponseItem{SourceKey: item.SourceKey, IsSucceed: false, Message: err.Error()}
 }
 
-func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByGavingKeyRequestItem) error {
+func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByGavingKeyRequestItem) (int64, error) {
 	pair, err := r.validateAndGetFileConverterPair(item)
+	var fileSize int64 = 0
 	if err != nil {
-		return err
+		return fileSize, err
 	}
 	firstHandler := converter.Converters.FirstOrDefault(func(c converter.Converter) bool {
 		return c.CanHandle(*pair)
 	})
 	if firstHandler == nil {
-		return fmt.Errorf("convert is not support, sourceType:%s,targetType:%s", pair.SourceType, pair.TargetType)
+		return fileSize, fmt.Errorf("convert is not support, sourceType:%s,targetType:%s", pair.SourceType, pair.TargetType)
 	}
 	fileHandler, err := r.downloadSourceFile(item.SourceKey)
 	if err != nil {
-		return err
+		return fileSize, err
 	}
 	defer fileHandler.Destory()
 	generateFilePath := path.Join(os.TempDir(), "generate", item.TargetKey)
 	err = os.MkdirAll(path.Dir(generateFilePath), 0770)
 	if err != nil {
-		return err
+		return fileSize, err
 	}
 	// 这里目前只有两种 先做简单判断
 	if pair.TargetType == "pdf" {
-		err := firstHandler.ToPrettyPdf(fileHandler.Path, generateFilePath)
-		defer os.Remove(generateFilePath)
-		if err != nil {
-			return err
-		}
+		err = firstHandler.ToPrettyPdf(fileHandler.Path, generateFilePath)
 	} else {
-		err := firstHandler.ToFastImage(fileHandler.Path, generateFilePath)
-		defer os.Remove(generateFilePath)
-		if err != nil {
-			return err
-		}
+		err = firstHandler.ToFastImage(fileHandler.Path, generateFilePath)
+	}
+	info, _ := os.Stat(generateFilePath)
+	fileSize = info.Size()
+	defer os.Remove(generateFilePath)
+	if err != nil {
+		return 0, err
 	}
 	err = r.uploadTargetFile(generateFilePath, item.TargetKey)
 	if err != nil {
-		return err
+		return fileSize, err
 	}
-	return nil
+	return fileSize, nil
 }
 
 func (r *GetFisrtImageByGavingKeyRequestItemHandler) validateAndGetFileConverterPair(item *ConvertByGavingKeyRequestItem) (*converter.ConverterTypePair, error) {

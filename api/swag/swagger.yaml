@@ -40,6 +40,8 @@ definitions:
         type: string
       sourceKey:
         type: string
+      targetFileSize:
+        type: integer
     required:
     - isSucceed
     - sourceKey
