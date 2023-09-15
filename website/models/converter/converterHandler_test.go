@@ -2,8 +2,6 @@ package converter
 
 import (
 	"fmt"
-	"os"
-	"path"
 	"testing"
 
 	"github.com/STRockefeller/go-linq"
@@ -131,6 +129,9 @@ func NewMockedGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavingKey
 	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil)
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
 	handler.itemHandler.s3Helper = mockedS3Helper
+	handler.itemHandler.getFileSize = func(filePath string) int64 {
+		return 8000
+	}
 	return handler
 }
 
@@ -140,6 +141,9 @@ func NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGa
 	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil).Once()
 	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, fmt.Errorf("key not exist")).Once()
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
+	handler.itemHandler.getFileSize = func(filePath string) int64 {
+		return 8000
+	}
 	handler.itemHandler.s3Helper = mockedS3Helper
 	return handler
 }
@@ -151,6 +155,9 @@ func NewUploadFaildGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavi
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(fmt.Errorf("upload error")).Once()
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil).Once()
 	handler.itemHandler.s3Helper = mockedS3Helper
+	handler.itemHandler.getFileSize = func(filePath string) int64 {
+		return 8000
+	}
 	return handler
 }
 
@@ -160,10 +167,6 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
-		targetFilePath1 := path.Join(os.TempDir(), "generate", "img/1.jpeg")
-		targetFilePath2 := path.Join(os.TempDir(), "generate", "img/2.jpeg")
-		os.Create(targetFilePath1)
-		os.Create(targetFilePath2)
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.jpeg"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
 		response := handler.Handle(&request)
@@ -172,21 +175,17 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.True(response.Items[0].IsSucceed)
 		assert.Empty(response.Items[0].Message)
-		assert.Zero(response.Items[0].TargetFileSize)
+		assert.Equal(int64(8000), response.Items[0].TargetFileSize)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.True(response.Items[1].IsSucceed)
 		assert.Empty(response.Items[1].Message)
-		assert.Zero(response.Items[1].TargetFileSize)
+		assert.Equal(int64(8000), response.Items[1].TargetFileSize)
 	})
 
 	t.Run("convert to pdf success", func(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
-		targetFilePath1 := path.Join(os.TempDir(), "generate", "img/1.pdf")
-		targetFilePath2 := path.Join(os.TempDir(), "generate", "img/2.pdf")
-		os.Create(targetFilePath1)
-		os.Create(targetFilePath2)
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.pdf"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.pdf"})
 		response := handler.Handle(&request)
@@ -195,11 +194,11 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.True(response.Items[0].IsSucceed)
 		assert.Empty(response.Items[0].Message)
-		assert.Zero(response.Items[0].TargetFileSize)
+		assert.Equal(int64(8000), response.Items[0].TargetFileSize)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.True(response.Items[1].IsSucceed)
 		assert.Empty(response.Items[1].Message)
-		assert.Zero(response.Items[1].TargetFileSize)
+		assert.Equal(int64(8000), response.Items[1].TargetFileSize)
 	})
 
 	t.Run("download faild", func(t *testing.T) {
