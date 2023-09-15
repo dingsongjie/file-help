@@ -16,7 +16,8 @@ type GetFisrtImageByGavingKeyRequestHandler struct {
 }
 
 type GetFisrtImageByGavingKeyRequestItemHandler struct {
-	s3Helper s3helper.S3Helper
+	s3Helper    s3helper.S3Helper
+	getFileSize func(filePath string) int64
 }
 
 func NewGetFisrtImageByGavingKeyRequestHandler(endpoint, accessKey, secretKey, bucketName string) (*GetFisrtImageByGavingKeyRequestHandler, error) {
@@ -24,7 +25,10 @@ func NewGetFisrtImageByGavingKeyRequestHandler(endpoint, accessKey, secretKey, b
 	if err != nil {
 		return nil, err
 	}
-	itemHandler := GetFisrtImageByGavingKeyRequestItemHandler{s3Helper: s3helper}
+	itemHandler := GetFisrtImageByGavingKeyRequestItemHandler{s3Helper: s3helper, getFileSize: func(filePath string) int64 {
+		info, _ := os.Stat(filePath)
+		return info.Size()
+	}}
 	handler := GetFisrtImageByGavingKeyRequestHandler{itemHandler: &itemHandler}
 	return &handler, nil
 }
@@ -76,8 +80,7 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 	} else {
 		err = firstHandler.ToFastImage(fileHandler.Path, generateFilePath)
 	}
-	info, _ := os.Stat(generateFilePath)
-	fileSize = info.Size()
+	fileSize = r.getFileSize(generateFilePath)
 	defer os.Remove(generateFilePath)
 	if err != nil {
 		return 0, err
