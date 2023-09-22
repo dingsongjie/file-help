@@ -27,6 +27,8 @@ func Initialise() *zap.Logger {
 			config.EncoderConfig.MessageKey = "Message"
 			config.EncoderConfig.TimeKey = "Timestamp"
 			config.EncoderConfig.LevelKey = "LogLevel"
+			config.EncoderConfig.NameKey = "Category"
+			config.EncoderConfig.StacktraceKey = "Exception"
 			Logger, _ = config.Build()
 		}
 		singletonMu.Unlock()
