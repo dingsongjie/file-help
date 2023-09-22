@@ -8,10 +8,28 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var assert1 string = "./test/assets/1.psd"
+
+func TestCanHandle(t *testing.T) {
+	log.Initialise()
+	newconverter := NewConverter()
+	assert := assert.New(t)
+
+	pdfToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpg"})
+	assert.True(pdfToJpg)
+	pdfToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpeg"})
+	assert.True(pdfToJpeg)
+	psdToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "jpg"})
+	assert.True(psdToJpg)
+	psdToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "jpeg"})
+	assert.True(psdToJpeg)
+	psdTopdf := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "pdf"})
+	assert.True(psdTopdf)
+}
 
 func TestToFastImage(t *testing.T) {
 	log.Initialise()
@@ -42,6 +60,13 @@ func TestToFastImage(t *testing.T) {
 	t.Run("convert first page of psd-1 to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, assert1)
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-1.jpeg")
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		assert.Nil(err)
+	})
+
+	t.Run("convert first page of pdf to jpeg", func(t *testing.T) {
+		aiAbsolutePath := path.Join(mydir, "./test/assets/1.pdf")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/pdf-1.jpeg")
 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 		assert.Nil(err)
 	})

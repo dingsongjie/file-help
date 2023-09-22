@@ -8,11 +8,25 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var assertAI3 string = "./test/assets/3.ai"
 var assertAI2Jpg3 string = "./test/outputs/ai-3.jpeg"
+
+func TestCanHandle(t *testing.T) {
+	log.Initialise()
+	newconverter := NewConverter()
+	assert := assert.New(t)
+
+	aiToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "ai", TargetType: "jpg"})
+	assert.True(aiToJpg)
+	aiToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "ai", TargetType: "jpeg"})
+	assert.True(aiToJpeg)
+	aiTopdf := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "ai", TargetType: "pdf"})
+	assert.True(aiTopdf)
+}
 
 func TestToFastJpeg(t *testing.T) {
 	log.Initialise()
