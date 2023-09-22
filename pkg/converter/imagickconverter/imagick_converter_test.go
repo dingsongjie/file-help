@@ -8,10 +8,28 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var assert1 string = "./test/assets/1.psd"
+
+func TestCanHandle(t *testing.T) {
+	log.Initialise()
+	newconverter := NewConverter()
+	assert := assert.New(t)
+
+	pdfToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpg"})
+	assert.True(pdfToJpg)
+	pdfToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpeg"})
+	assert.True(pdfToJpeg)
+	psdToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "jpg"})
+	assert.True(psdToJpg)
+	psdToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "jpeg"})
+	assert.True(psdToJpeg)
+	psdTopdf := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "pdf"})
+	assert.True(psdTopdf)
+}
 
 func TestToFastImage(t *testing.T) {
 	log.Initialise()
