@@ -45,6 +45,13 @@ func TestToFastImage(t *testing.T) {
 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 		assert.Nil(err)
 	})
+
+	t.Run("convert first page of pdf to jpeg", func(t *testing.T) {
+		aiAbsolutePath := path.Join(mydir, "./test/assets/1.pdf")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/pdf-1.jpeg")
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		assert.Nil(err)
+	})
 	t.Run("convert first page of psd-2 to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/2.psd")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-2.jpeg")
