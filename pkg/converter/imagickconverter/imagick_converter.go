@@ -42,6 +42,7 @@ func (r *ImagickConverter) convert(inputFile string, outputFile string, firstPag
 	if firstPage {
 		inputFile = inputFile + "[0]"
 	}
+	//_, err := imagick.ConvertImageCommand([]string{"convert", "-density", "300", "-units", "pixelsperinch", inputFile, outputFile})
 	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
 		return err
