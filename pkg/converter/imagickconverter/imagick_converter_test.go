@@ -19,10 +19,6 @@ func TestCanHandle(t *testing.T) {
 	newconverter := NewConverter()
 	assert := assert.New(t)
 
-	pdfToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpg"})
-	assert.True(pdfToJpg)
-	pdfToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpeg"})
-	assert.True(pdfToJpeg)
 	psdToJpg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "jpg"})
 	assert.True(psdToJpg)
 	psdToJpeg := newconverter.CanHandle(converter.ConverterTypePair{SourceType: "psd", TargetType: "jpeg"})
@@ -64,12 +60,6 @@ func TestToFastImage(t *testing.T) {
 		assert.Nil(err)
 	})
 
-	t.Run("convert first page of pdf to jpeg", func(t *testing.T) {
-		aiAbsolutePath := path.Join(mydir, "./test/assets/1.pdf")
-		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/pdf-1.jpeg")
-		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
-		assert.Nil(err)
-	})
 	t.Run("convert first page of psd-2 to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/2.psd")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-2.jpeg")

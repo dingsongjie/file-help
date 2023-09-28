@@ -16,12 +16,20 @@ var (
 func Initialise() *zap.Logger {
 	if Logger == nil {
 		singletonMu.Lock()
+		var config zap.Config
 		if Logger == nil {
 			if configs.IsGinInDebug {
-				Logger, _ = zap.NewDevelopmentConfig().Build()
+				config = zap.NewDevelopmentConfig()
+
 			} else {
-				Logger, _ = zap.NewProductionConfig().Build()
+				config = zap.NewProductionConfig()
 			}
+			config.EncoderConfig.MessageKey = "Message"
+			config.EncoderConfig.TimeKey = "Timestamp"
+			config.EncoderConfig.LevelKey = "LogLevel"
+			config.EncoderConfig.NameKey = "Category"
+			config.EncoderConfig.StacktraceKey = "Exception"
+			Logger, _ = config.Build()
 		}
 		singletonMu.Unlock()
 	}

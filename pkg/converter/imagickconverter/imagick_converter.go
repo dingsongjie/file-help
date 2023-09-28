@@ -25,12 +25,10 @@ func NewConverter() *ImagickConverter {
 		if instance == nil {
 			instance = &ImagickConverter{}
 			instance.mu = sync.Mutex{}
-			instance.AllowedConverteTypeMaps = make([]*converter.ConverterTypePair, 5)
+			instance.AllowedConverteTypeMaps = make([]*converter.ConverterTypePair, 3)
 			instance.AllowedConverteTypeMaps[0] = &converter.ConverterTypePair{SourceType: "psd", TargetType: "jpeg"}
 			instance.AllowedConverteTypeMaps[1] = &converter.ConverterTypePair{SourceType: "psd", TargetType: "jpg"}
 			instance.AllowedConverteTypeMaps[2] = &converter.ConverterTypePair{SourceType: "psd", TargetType: "pdf"}
-			instance.AllowedConverteTypeMaps[3] = &converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpg"}
-			instance.AllowedConverteTypeMaps[4] = &converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpeg"}
 			imagick.Initialize()
 		}
 		singletonMu.Unlock()
@@ -42,6 +40,7 @@ func (r *ImagickConverter) convert(inputFile string, outputFile string, firstPag
 	if firstPage {
 		inputFile = inputFile + "[0]"
 	}
+	//_, err := imagick.ConvertImageCommand([]string{"convert", "-density", "300", "-units", "pixelsperinch", inputFile, outputFile})
 	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
 		return err
