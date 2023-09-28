@@ -26,10 +26,12 @@ func NewConverter() *AiConverter {
 		singletonMu.Lock()
 		if instance == nil {
 			instance = &AiConverter{}
-			instance.AllowedConverteTypeMaps = make([]*converter.ConverterTypePair, 3)
+			instance.AllowedConverteTypeMaps = make([]*converter.ConverterTypePair, 5)
 			instance.AllowedConverteTypeMaps[0] = &converter.ConverterTypePair{SourceType: "ai", TargetType: "jpg"}
 			instance.AllowedConverteTypeMaps[1] = &converter.ConverterTypePair{SourceType: "ai", TargetType: "jpeg"}
 			instance.AllowedConverteTypeMaps[2] = &converter.ConverterTypePair{SourceType: "ai", TargetType: "pdf"}
+			instance.AllowedConverteTypeMaps[3] = &converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpg"}
+			instance.AllowedConverteTypeMaps[4] = &converter.ConverterTypePair{SourceType: "pdf", TargetType: "jpeg"}
 		}
 		singletonMu.Unlock()
 		instance.initialise()
