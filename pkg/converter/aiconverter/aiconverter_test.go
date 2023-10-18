@@ -58,20 +58,26 @@ func TestToFastJpeg(t *testing.T) {
 		assert.Nil(err)
 	})
 
-	t.Run("convert first page of pdf to jpeg", func(t *testing.T) {
+	t.Run("convert first page of 1.pdf to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/1.pdf")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-1.jpeg")
 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 		assert.Nil(err)
 	})
 
-	t.Run("convert first page of pdf to jpeg", func(t *testing.T) {
+	t.Run("convert first page of 2.pdf to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/2.pdf")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-2.jpeg")
 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
 		assert.Nil(err)
 	})
 
+	t.Run("convert first page of 3.pdf to jpeg", func(t *testing.T) {
+		aiAbsolutePath := path.Join(mydir, "./test/assets/3.pdf")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-3.jpeg")
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		assert.Nil(err)
+	})
 	// 如果 gs init 出错进程会崩溃，所以忽略文件找不到的情况
 	// t.Run("wrong path ai", func(t *testing.T) {
 	// 	aiAbsolutePath := path.Join(mydir, "./test/assets/4.ai")

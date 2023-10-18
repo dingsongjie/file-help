@@ -1,8 +1,10 @@
 package s3helper
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
 	"sync"
@@ -104,11 +106,12 @@ func (r S3DefaultHelper) Upload(localPath string, fileKey string) (err error) {
 		return err
 	}
 	defer f.Close()
-
+	contentType, reader := getContentType(f)
 	_, err = r.uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(r.bucketName),
-		Key:    aws.String(fileKey),
-		Body:   f,
+		Bucket:      aws.String(r.bucketName),
+		Key:         aws.String(fileKey),
+		Body:        reader,
+		ContentType: aws.String(contentType),
 	})
 	if err != nil {
 		return fmt.Errorf("failed to upload file, %v", err)
@@ -121,4 +124,14 @@ func isFileExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func getContentType(file *os.File) (string, *bytes.Reader) {
+	fileInfo, _ := file.Stat()
+	size := fileInfo.Size()
+	buffer := make([]byte, size)
+	file.Read(buffer)
+	fileBytes := bytes.NewReader(buffer)
+	fileType := http.DetectContentType(buffer)
+	return fileType, fileBytes
 }
