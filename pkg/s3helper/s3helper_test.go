@@ -206,6 +206,7 @@ func TestUpload(t *testing.T) {
 
 				assert.Equal('E', int32(buffer[0]))
 				assert.Equal('F', int32(buffer[1]))
+				assert.Equal("text/plain; charset=utf-8", *input.ContentType)
 				fmt.Print(input)
 			})
 
@@ -231,6 +232,7 @@ func TestUpload(t *testing.T) {
 
 				assert.Equal('E', int32(buffer[0]))
 				assert.Equal('F', int32(buffer[1]))
+				assert.Equal("text/plain; charset=utf-8", input.ContentType)
 				fmt.Print(input)
 			})
 
