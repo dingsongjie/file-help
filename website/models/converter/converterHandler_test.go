@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
+	"www.github.com/dingsongjie/file-help/pkg/log"
 	"www.github.com/dingsongjie/file-help/pkg/s3helper"
 )
 
@@ -163,6 +164,7 @@ func NewUploadFaildGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavi
 
 func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 	assert := assert.New(t)
+	log.Initialise()
 	t.Run("convert to image success", func(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
@@ -297,9 +299,9 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(2, len(response.Items))
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.False(response.Items[0].IsSucceed)
-		assert.Equal("convert to image error", response.Items[0].Message)
+		assert.Equal("converte faild", response.Items[0].Message)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.False(response.Items[1].IsSucceed)
-		assert.Equal("convert to image error", response.Items[1].Message)
+		assert.Equal("converte faild", response.Items[1].Message)
 	})
 }
