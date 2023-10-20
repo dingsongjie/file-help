@@ -60,7 +60,7 @@ func (r *AiConverter) ToFastImage(inputFile string, outputFile string) error {
 	return r.ToFastJpeg(inputFile, outputFile)
 
 }
-func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) (err error) {
+func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) error {
 	gsCommandMu.Lock()
 	instance.initialise()
 	defer gsCommandMu.Unlock()
@@ -90,14 +90,15 @@ func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) (err error
 		"-sOutputFile=" + outputFile,
 		inputFile,
 	}
-	if err := r.internalGSInstance.Init(args); err != nil {
-		return err
-	}
+	err := r.internalGSInstance.Init(args)
 	defer func() {
 		err = r.internalGSInstance.Exit()
 		r.internalGSInstance.Destroy()
 		r.internalGSInstance = nil
 	}()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -134,14 +135,15 @@ func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
 		inputFile,
 	}
 
-	if err := r.internalGSInstance.Init(args); err != nil {
-		return err
-	}
+	err := r.internalGSInstance.Init(args)
 	defer func() {
-		r.internalGSInstance.Exit()
+		err = r.internalGSInstance.Exit()
 		r.internalGSInstance.Destroy()
 		r.internalGSInstance = nil
 	}()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
