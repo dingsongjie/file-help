@@ -79,18 +79,17 @@ func TestToFastJpeg(t *testing.T) {
 		assert.Nil(err)
 	})
 
-	// t.Run("gs is released when init faild", func(t *testing.T) {
-	// 	aiAbsolutePath := path.Join(mydir, "./test/assets/3.pdf1")
-	// 	outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-3.jpeg")
-	// 	if r := recover(); r != nil {
-	// 		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
-	// 		assert.NotNil(err)
-	// 	}
-	// 	aiAbsolutePath = path.Join(mydir, "./test/assets/3.pdf")
-	// 	outputAbsolutePath = path.Join(mydir, "./test/outputs/pdf-3.jpeg")
-	// 	err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
-	// 	assert.Nil(err)
-	// })
+	t.Run("gs is released when init faild", func(t *testing.T) {
+		aiAbsolutePath := path.Join(mydir, "./test/assets/3.pdf1")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-3.jpeg")
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		assert.NotNil(err)
+
+		aiAbsolutePath = path.Join(mydir, "./test/assets/3.pdf")
+		outputAbsolutePath = path.Join(mydir, "./test/outputs/pdf-3.jpeg")
+		err = converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		assert.Nil(err)
+	})
 	// 如果 gs init 出错进程会崩溃，所以忽略文件找不到的情况
 	// t.Run("wrong path ai", func(t *testing.T) {
 	// 	aiAbsolutePath := path.Join(mydir, "./test/assets/4.ai")
@@ -166,6 +165,19 @@ func TestToPrettyPdf(t *testing.T) {
 			}()
 		}
 		wg.Wait()
+	})
+
+	t.Run("gs is released when init faild", func(t *testing.T) {
+		converter := NewConverter()
+		aiAbsolutePath := path.Join(mydir, "./test/assets/assets/2.aif")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/ai-2.pdf")
+		err := converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
+		assert.NotNil(err)
+
+		aiAbsolutePath = path.Join(mydir, "./test/assets/2.ai")
+		outputAbsolutePath = path.Join(mydir, "./test/outputs/ai-2.pdf")
+		err = converter.ToPrettyPdf(aiAbsolutePath, outputAbsolutePath)
+		assert.Nil(err)
 	})
 }
 func BenchmarkToFastJpeg(b *testing.B) {

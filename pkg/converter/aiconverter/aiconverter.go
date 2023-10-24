@@ -91,7 +91,9 @@ func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) error {
 		inputFile,
 	}
 	if err := r.internalGSInstance.Init(args); err != nil {
-		panic(err)
+		r.internalGSInstance.Destroy()
+		r.internalGSInstance = nil
+		return err
 	}
 	defer func() {
 		r.internalGSInstance.Exit()
@@ -135,7 +137,9 @@ func (r *AiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
 	}
 
 	if err := r.internalGSInstance.Init(args); err != nil {
-		panic(err)
+		r.internalGSInstance.Destroy()
+		r.internalGSInstance = nil
+		return err
 	}
 	defer func() {
 		r.internalGSInstance.Exit()
