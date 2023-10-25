@@ -42,6 +42,7 @@ func NewConverter() *AiConverter {
 func (r *AiConverter) initialise() {
 	if r.internalGSInstance == nil {
 		singletonMu.Lock()
+		defer singletonMu.Unlock()
 		if r.internalGSInstance == nil {
 			rev, err := ghostscript.GetRevision()
 			if err != nil {
@@ -53,7 +54,7 @@ func (r *AiConverter) initialise() {
 				log.Logger.Sugar().Fatalf("Error: %+v\n", err)
 			}
 		}
-		singletonMu.Unlock()
+
 	}
 }
 func (r *AiConverter) ToFastImage(inputFile string, outputFile string) error {
