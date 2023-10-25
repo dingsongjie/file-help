@@ -1,18 +1,16 @@
 package aiconverter
 
 import (
-	"sync"
-
 	"github.com/MrSaints/go-ghostscript/ghostscript"
 	"github.com/STRockefeller/go-linq"
-
+	"github.com/sasha-s/go-deadlock"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var (
-	singletonMu sync.Mutex = sync.Mutex{}
-	gsCommandMu sync.Mutex = sync.Mutex{}
+	singletonMu deadlock.Mutex = deadlock.Mutex{}
+	gsCommandMu deadlock.Mutex = deadlock.Mutex{}
 	instance    *AiConverter
 )
 
