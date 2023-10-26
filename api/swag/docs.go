@@ -179,6 +179,9 @@ const docTemplate = `{
                 "sourceKey": {
                     "type": "string"
                 },
+                "targetFileDpi": {
+                    "type": "integer"
+                },
                 "targetKey": {
                     "type": "string"
                 }

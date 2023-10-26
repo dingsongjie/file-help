@@ -13,6 +13,7 @@ import (
 )
 
 var assert1 string = "./test/assets/1.psd"
+var defaultDpi int = 72
 
 func TestCanHandle(t *testing.T) {
 	log.Initialise()
@@ -56,21 +57,28 @@ func TestToFastImage(t *testing.T) {
 	t.Run("convert first page of psd-1 to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, assert1)
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-1.jpeg")
-		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, 0)
 		assert.Nil(err)
 	})
 
 	t.Run("convert first page of psd-2 to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/2.psd")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-2.jpeg")
-		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, defaultDpi)
 		assert.Nil(err)
+	})
+
+	t.Run("not supported dpi", func(t *testing.T) {
+		aiAbsolutePath := path.Join(mydir, "./test/assets/2.psd")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-2.jpeg")
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, 310)
+		assert.NotNil(err)
 	})
 
 	t.Run("worng path of psd to jpeg", func(t *testing.T) {
 		aiAbsolutePath := path.Join(mydir, "./test/assets/4.psd")
 		outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-4.jpeg")
-		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, defaultDpi)
 		assert.NotNil(err)
 	})
 	converter.Destory()
@@ -84,7 +92,7 @@ func TestToFastImage(t *testing.T) {
 				converter := NewConverter()
 				aiAbsolutePath := path.Join(mydir, assert1)
 				outputAbsolutePath := path.Join(mydir, "./test/outputs/convertfirst/psd-1.jpeg")
-				err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+				err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, defaultDpi)
 				assert.Nil(err)
 				converter.Destory()
 				wg.Done()
@@ -104,7 +112,7 @@ func BenchmarkToFastImage(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		aiAbsolutePath := path.Join(mydir, fmt.Sprintf("./test/assets/%d.psd", i%3+1))
 		outputAbsolutePath := path.Join(mydir, fmt.Sprintf("./test/outputs/psd-%d.jpeg", i%3+1))
-		converter.ToFastImage(aiAbsolutePath, outputAbsolutePath)
+		converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, defaultDpi)
 	}
 	converter.Destory()
 }

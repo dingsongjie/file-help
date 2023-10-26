@@ -79,7 +79,7 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 	if pair.TargetType == "pdf" {
 		err = firstHandler.ToPrettyPdf(fileHandler.Path, generateFilePath)
 	} else {
-		err = firstHandler.ToFastImage(fileHandler.Path, generateFilePath)
+		err = firstHandler.ToFastImage(fileHandler.Path, generateFilePath, item.TargetFileDpi)
 	}
 	if err != nil {
 		log.Logger.Error(err.Error())

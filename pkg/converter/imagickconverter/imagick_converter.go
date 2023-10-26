@@ -1,6 +1,7 @@
 package imagickconverter
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/STRockefeller/go-linq"
@@ -36,11 +37,10 @@ func NewConverter() *ImagickConverter {
 	return instance
 }
 
-func (r *ImagickConverter) convert(inputFile string, outputFile string, firstPage bool) error {
+func (r *ImagickConverter) convertToPdf(inputFile string, outputFile string, firstPage bool) error {
 	if firstPage {
 		inputFile = inputFile + "[0]"
 	}
-	//_, err := imagick.ConvertImageCommand([]string{"convert", "-density", "300", "-units", "pixelsperinch", inputFile, outputFile})
 	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
 		return err
@@ -48,16 +48,30 @@ func (r *ImagickConverter) convert(inputFile string, outputFile string, firstPag
 	return nil
 }
 
-func (r *ImagickConverter) ToFastImage(inputFile string, outputFile string) error {
-	return r.ConvertToJpeg(inputFile, outputFile, true)
+func (r *ImagickConverter) ToFastImage(inputFile string, outputFile string, dpi int) error {
+	if dpi == 0 {
+		dpi = 72
+	}
+	if dpi > 300 {
+		return fmt.Errorf("dpi is not allowed to exceed 300")
+	}
+	return r.convertToJpeg(inputFile, outputFile, true, dpi)
 }
 
 func (r *ImagickConverter) ToPrettyPdf(inputFile string, outputFile string) error {
-	return r.convert(inputFile, outputFile, false)
+	return r.convertToPdf(inputFile, outputFile, false)
 }
 
-func (r *ImagickConverter) ConvertToJpeg(inputFile string, outputFile string, firstPage bool) error {
-	return r.convert(inputFile, outputFile, firstPage)
+func (r *ImagickConverter) convertToJpeg(inputFile string, outputFile string, firstPage bool, dpi int) error {
+	if firstPage {
+		inputFile = inputFile + "[0]"
+	}
+	_, err := imagick.ConvertImageCommand([]string{"convert", "-density", fmt.Sprint(dpi), "-units", "pixelsperinch", inputFile, outputFile})
+	//_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *ImagickConverter) CanHandle(pair converter.ConverterTypePair) bool {

@@ -1,6 +1,8 @@
 package aiconverter
 
 import (
+	"fmt"
+
 	"github.com/MrSaints/go-ghostscript/ghostscript"
 	"github.com/STRockefeller/go-linq"
 	"github.com/sasha-s/go-deadlock"
@@ -55,11 +57,17 @@ func (r *AiConverter) initialise() {
 
 	}
 }
-func (r *AiConverter) ToFastImage(inputFile string, outputFile string) error {
-	return r.ToFastJpeg(inputFile, outputFile)
+func (r *AiConverter) ToFastImage(inputFile string, outputFile string, dpi int) error {
+	if dpi == 0 {
+		dpi = 300
+	}
+	if dpi > 300 {
+		return fmt.Errorf("dpi is not allowed to exceed 300")
+	}
+	return r.ToFastJpeg(inputFile, outputFile, dpi)
 
 }
-func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) error {
+func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string, dpi int) error {
 	gsCommandMu.Lock()
 	defer gsCommandMu.Unlock()
 	r.initialise()
@@ -85,6 +93,7 @@ func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string) error {
 		"-dColorImageFilter=/FlateEncode",
 		"-dNOPAUSE",
 		"-dNumRenderingThreads=2",
+		fmt.Sprint("-r", dpi),
 		/* 		"-r100", */
 		// "-g250x250",
 		"-dDEVICEWIDTHPOINTS=150",

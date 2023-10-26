@@ -40,13 +40,14 @@ type mockedAiConverter struct {
 	mock.Mock
 }
 
-func (r *mockedAiConverter) ToFastImage(inputFile string, outputFile string) error {
-	args := r.Called(inputFile, outputFile)
+func (r *mockedAiConverter) ToFastImage(inputFile string, outputFile string, dpi int) error {
+	args := r.Called(inputFile, outputFile, dpi)
 	return args.Error(0)
 }
 
 func (r *mockedAiConverter) ToPrettyPdf(inputFile string, outputFile string) error {
-	return r.ToFastImage(inputFile, outputFile)
+	args := r.Called(inputFile, outputFile)
+	return args.Error(0)
 }
 
 func (r *mockedAiConverter) Destory() {
@@ -62,13 +63,14 @@ type mockedImagickConverter struct {
 	mock.Mock
 }
 
-func (r *mockedImagickConverter) ToFastImage(inputFile string, outputFile string) error {
-	args := r.Called(inputFile, outputFile)
+func (r *mockedImagickConverter) ToFastImage(inputFile string, outputFile string, dpi int) error {
+	args := r.Called(inputFile, outputFile, dpi)
 	return args.Error(0)
 }
 
 func (r *mockedImagickConverter) ToPrettyPdf(inputFile string, outputFile string) error {
-	return r.ToFastImage(inputFile, outputFile)
+	args := r.Called(inputFile, outputFile)
+	return args.Error(0)
 }
 
 func (r *mockedImagickConverter) Destory() {
@@ -83,13 +85,13 @@ func (r *mockedImagickConverter) CanHandle(pair converter.ConverterTypePair) boo
 func RegisterMockedConverters() {
 	converter.Converters = make([]converter.Converter, 2)
 	aiConverter := new(mockedAiConverter)
-	aiConverter.On("ToFastImage", mock.Anything, mock.Anything).Return(nil)
+	aiConverter.On("ToFastImage", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	aiConverter.On("ToPrettyPdf", mock.Anything, mock.Anything).Return(nil)
 	aiConverter.On("CanHandle", mock.Anything).Return(true)
 	aiConverter.On("Destory").Return(nil)
 	converter.Converters[0] = aiConverter
 	imagickConverter := new(mockedImagickConverter)
-	imagickConverter.On("ToFastImage", mock.Anything, mock.Anything).Return(nil)
+	imagickConverter.On("ToFastImage", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	imagickConverter.On("ToPrettyPdf", mock.Anything, mock.Anything).Return(nil)
 	imagickConverter.On("CanHandle", mock.Anything).Return(true)
 	imagickConverter.On("Destory").Return(nil)
@@ -99,13 +101,13 @@ func RegisterMockedConverters() {
 func RegisterMockedFailConvertConverters() {
 	converter.Converters = make([]converter.Converter, 2)
 	aiConverter := new(mockedAiConverter)
-	aiConverter.On("ToFastImage", mock.Anything, mock.Anything).Return(fmt.Errorf("convert to image error"))
+	aiConverter.On("ToFastImage", mock.Anything, mock.Anything, mock.Anything).Return(fmt.Errorf("convert to image error"))
 	aiConverter.On("ToPrettyPdf", mock.Anything, mock.Anything).Return(nil)
 	aiConverter.On("CanHandle", mock.Anything).Return(true)
 	aiConverter.On("Destory").Return(nil)
 	converter.Converters[0] = aiConverter
 	imagickConverter := new(mockedImagickConverter)
-	imagickConverter.On("ToFastImage", mock.Anything, mock.Anything).Return(nil)
+	imagickConverter.On("ToFastImage", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	imagickConverter.On("ToPrettyPdf", mock.Anything, mock.Anything).Return(fmt.Errorf("convert to pdf error"))
 	imagickConverter.On("CanHandle", mock.Anything).Return(true)
 	imagickConverter.On("Destory").Return(nil)
@@ -169,7 +171,7 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
-		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.jpeg"})
+		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.jpeg", TargetFileDpi: 90})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
 		response := handler.Handle(&request)
 		assert.True(response.IsAllSucceed)

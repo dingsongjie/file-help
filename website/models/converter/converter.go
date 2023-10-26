@@ -5,8 +5,9 @@ type ConvertByGavingKeyRequest struct {
 }
 
 type ConvertByGavingKeyRequestItem struct {
-	SourceKey string `validate:"required"`
-	TargetKey string `validate:"required"`
+	SourceKey     string `validate:"required"`
+	TargetKey     string `validate:"required"`
+	TargetFileDpi int    `validate:"default=0"`
 }
 
 type ConvertByGavingKeyResponseItem struct {

@@ -8,7 +8,7 @@ type ConverterTypePair struct {
 }
 
 type Converter interface {
-	ToFastImage(inputFile string, outputFile string) error
+	ToFastImage(inputFile string, outputFile string, dpi int) error
 	ToPrettyPdf(inputFile string, outputFile string) error
 	CanHandle(pair ConverterTypePair) bool
 	Destory()
