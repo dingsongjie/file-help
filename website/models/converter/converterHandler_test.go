@@ -301,9 +301,9 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(2, len(response.Items))
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.False(response.Items[0].IsSucceed)
-		assert.Equal("converte faild", response.Items[0].Message)
+		assert.Equal("convert to image error", response.Items[0].Message)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.False(response.Items[1].IsSucceed)
-		assert.Equal("converte faild", response.Items[1].Message)
+		assert.Equal("convert to image error", response.Items[1].Message)
 	})
 }

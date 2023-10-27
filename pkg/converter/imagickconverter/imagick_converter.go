@@ -7,6 +7,7 @@ import (
 	"github.com/STRockefeller/go-linq"
 	"gopkg.in/gographics/imagick.v3/imagick"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
+	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var (
@@ -43,7 +44,8 @@ func (r *ImagickConverter) convertToPdf(inputFile string, outputFile string, fir
 	}
 	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
-		return err
+		log.Logger.Error(err.Error())
+		return fmt.Errorf("convert faild")
 	}
 	return nil
 }
@@ -69,7 +71,8 @@ func (r *ImagickConverter) convertToJpeg(inputFile string, outputFile string, fi
 	_, err := imagick.ConvertImageCommand([]string{"convert", "-density", fmt.Sprint(dpi), "-units", "pixelsperinch", inputFile, outputFile})
 	//_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
-		return err
+		log.Logger.Error(err.Error())
+		return fmt.Errorf("convert faild")
 	}
 	return nil
 }

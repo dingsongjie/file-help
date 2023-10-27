@@ -8,7 +8,6 @@ import (
 
 	"github.com/STRockefeller/go-linq"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 	"www.github.com/dingsongjie/file-help/pkg/s3helper"
 )
 
@@ -82,8 +81,7 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) HandleCore(item *ConvertByG
 		err = firstHandler.ToFastImage(fileHandler.Path, generateFilePath, item.TargetFileDpi)
 	}
 	if err != nil {
-		log.Logger.Error(err.Error())
-		return 0, fmt.Errorf("converte faild")
+		return 0, err
 	}
 	fileSize = r.getFileSize(generateFilePath)
 	defer os.Remove(generateFilePath)
