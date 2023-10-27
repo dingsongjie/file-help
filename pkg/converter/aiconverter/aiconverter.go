@@ -59,7 +59,7 @@ func (r *AiConverter) initialise() {
 }
 func (r *AiConverter) ToFastImage(inputFile string, outputFile string, dpi int) error {
 	if dpi == 0 {
-		dpi = 300
+		dpi = 72
 	}
 	if dpi > 300 {
 		return fmt.Errorf("dpi is not allowed to exceed 300")
