@@ -5,6 +5,7 @@ type ConvertByGavingKeyRequest struct {
 }
 
 type ConvertByGavingKeyRequestItem struct {
+	// @description 如果这个值为合法url就会根据url地址获取源文件，如果不是则默认为文件key，通过minio获取文件
 	SourceKey     string `validate:"required"`
 	TargetKey     string `validate:"required"`
 	TargetFileDpi int    `validate:"default=0"`

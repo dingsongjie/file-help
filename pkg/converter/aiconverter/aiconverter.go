@@ -11,9 +11,17 @@ import (
 )
 
 var (
-	singletonMu deadlock.Mutex = deadlock.Mutex{}
-	gsCommandMu deadlock.Mutex = deadlock.Mutex{}
-	instance    *AiConverter
+	singletonMu         deadlock.Mutex = deadlock.Mutex{}
+	gsCommandMu         deadlock.Mutex = deadlock.Mutex{}
+	instance            *AiConverter
+	gsGetRevision       = ghostscript.GetRevision
+	gsNewInstance       = ghostscript.NewInstance
+	logGetRevisionFaild = func(err error, rev ghostscript.Revision) {
+		log.Logger.Sugar().Fatalf("Revision: %+v\n", rev)
+	}
+	logNewInstanceFaild = func(err error) {
+		log.Logger.Sugar().Fatalf("Error: %+v\n", err)
+	}
 )
 
 type AiConverter struct {
@@ -44,14 +52,14 @@ func (r *AiConverter) initialise() {
 		singletonMu.Lock()
 		defer singletonMu.Unlock()
 		if r.internalGSInstance == nil {
-			rev, err := ghostscript.GetRevision()
+			rev, err := gsGetRevision()
 			if err != nil {
-				log.Logger.Sugar().Fatalf("Revision: %+v\n", rev)
+				logGetRevisionFaild(err, rev)
 			}
 
-			r.internalGSInstance, err = ghostscript.NewInstance()
+			r.internalGSInstance, err = gsNewInstance()
 			if err != nil {
-				log.Logger.Sugar().Fatalf("Error: %+v\n", err)
+				logNewInstanceFaild(err)
 			}
 		}
 
@@ -72,8 +80,10 @@ func (r *AiConverter) ToFastJpeg(inputFile string, outputFile string, dpi int) e
 	defer gsCommandMu.Unlock()
 	r.initialise()
 	defer func() {
-		r.internalGSInstance.Destroy()
-		r.internalGSInstance = nil
+		if r.internalGSInstance != nil {
+			r.internalGSInstance.Destroy()
+			r.internalGSInstance = nil
+		}
 	}()
 
 	args := []string{

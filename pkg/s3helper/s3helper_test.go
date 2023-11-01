@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"www.github.com/dingsongjie/file-help/pkg/file"
 )
 
 type mockedDownloader struct {
@@ -62,22 +63,9 @@ func NewMockedS3Helper(downloader s3manageriface.DownloaderAPI, uploader s3manag
 	return instance, nil
 }
 
-func createFileAndReturnFile(fullPath string) (*os.File, error) {
-	err := os.MkdirAll(path.Dir(fullPath), 0770)
-	if err != nil {
-		return nil, err
-	}
-	file, err := os.Create(fullPath)
-	if err != nil {
-		return nil, err
-	}
-	return file, nil
-}
-
 func TestNewS3Helper(t *testing.T) {
 	assert := assert.New(t)
-	inter, err := NewS3Helper("https://test.com", "test", "test", "test-bucket")
-	assert.Nil(err)
+	inter := NewS3Helper("https://test.com", "test", "test", "test-bucket")
 	instance, ok := inter.(*S3DefaultHelper)
 	assert.True(ok)
 	assert.Equal("test-bucket", instance.bucketName)
@@ -97,7 +85,7 @@ func TestDownLoadAndReturnLocalPath(t *testing.T) {
 	t.Run("file exist", func(t *testing.T) {
 		downloader := new(mockedDownloader)
 		downloader.On("Download", mock.Anything, mock.Anything, mock.Anything).Return(2, nil)
-		file, err := createFileAndReturnFile(fullPath)
+		file, err := file.CreateFileAndReturnFile(fullPath)
 		assert.Nil(err)
 		file.Write([]byte{'A', 'B'})
 		file.Close()

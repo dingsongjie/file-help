@@ -2,14 +2,16 @@ package converter
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"testing"
 
 	"github.com/STRockefeller/go-linq"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
+	"www.github.com/dingsongjie/file-help/pkg/file"
 	"www.github.com/dingsongjie/file-help/pkg/log"
-	"www.github.com/dingsongjie/file-help/pkg/s3helper"
 )
 
 var (
@@ -26,9 +28,9 @@ type mockedS3Helper struct {
 	mock.Mock
 }
 
-func (r *mockedS3Helper) DownLoadAndReturnLocalPath(fileKey string) (*s3helper.LocalFileHandle, error) {
+func (r *mockedS3Helper) DownLoadAndReturnLocalPath(fileKey string) (*file.LocalFileHandle, error) {
 	args := r.Called(fileKey)
-	return (args.Get(0)).(*s3helper.LocalFileHandle), args.Error(1)
+	return (args.Get(0)).(*file.LocalFileHandle), args.Error(1)
 }
 
 func (r *mockedS3Helper) Upload(localPath string, fileKey string) (err error) {
@@ -129,7 +131,7 @@ func TestNewGetFisrtImageByGavingKeyRequestHandler(t *testing.T) {
 func NewMockedGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavingKeyRequestHandler {
 	handler, _ := NewGetFisrtImageByGavingKeyRequestHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
 	mockedS3Helper := new(mockedS3Helper)
-	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil)
+	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil)
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
 	handler.itemHandler.s3Helper = mockedS3Helper
 	handler.itemHandler.getFileSize = func(filePath string) int64 {
@@ -141,8 +143,8 @@ func NewMockedGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavingKey
 func NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavingKeyRequestHandler {
 	handler, _ := NewGetFisrtImageByGavingKeyRequestHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
 	mockedS3Helper := new(mockedS3Helper)
-	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil).Once()
-	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, fmt.Errorf("key not exist")).Once()
+	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil).Once()
+	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, fmt.Errorf("key not exist")).Once()
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
 	handler.itemHandler.getFileSize = func(filePath string) int64 {
 		return 8000
@@ -154,7 +156,7 @@ func NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGa
 func NewUploadFaildGetFisrtImageByGavingKeyRequestHandler() *GetFisrtImageByGavingKeyRequestHandler {
 	handler, _ := NewGetFisrtImageByGavingKeyRequestHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
 	mockedS3Helper := new(mockedS3Helper)
-	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&s3helper.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil)
+	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil)
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(fmt.Errorf("upload error")).Once()
 	mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil).Once()
 	handler.itemHandler.s3Helper = mockedS3Helper
@@ -177,6 +179,28 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.True(response.IsAllSucceed)
 		assert.Equal(2, len(response.Items))
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
+		assert.True(response.Items[0].IsSucceed)
+		assert.Empty(response.Items[0].Message)
+		assert.Equal(int64(8000), response.Items[0].TargetFileSize)
+		assert.Equal(testPsdKey, response.Items[1].SourceKey)
+		assert.True(response.Items[1].IsSucceed)
+		assert.Empty(response.Items[1].Message)
+		assert.Equal(int64(8000), response.Items[1].TargetFileSize)
+	})
+
+	t.Run("convert to image success by url parameter", func(t *testing.T) {
+		RegisterMockedConverters()
+		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
+		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
+		downloadHttpFile = func(url string) (*file.LocalFileHandle, error) {
+			return &file.LocalFileHandle{Path: "img/2.jpeg", IsDestory: false}, nil
+		}
+		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: "http://www.baidu.com/1.ai", TargetKey: "img/1.jpeg", TargetFileDpi: 90})
+		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
+		response := handler.Handle(&request)
+		assert.True(response.IsAllSucceed)
+		assert.Equal(2, len(response.Items))
+		assert.Equal("http://www.baidu.com/1.ai", response.Items[0].SourceKey)
 		assert.True(response.Items[0].IsSucceed)
 		assert.Empty(response.Items[0].Message)
 		assert.Equal(int64(8000), response.Items[0].TargetFileSize)
@@ -222,6 +246,27 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal("key not exist", response.Items[1].Message)
 	})
 
+	t.Run("make target dir faild", func(t *testing.T) {
+		RegisterMockedConverters()
+		handler := NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler()
+		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
+		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.jpeg"})
+		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
+		osMakeDir = func(path string, perm os.FileMode) error {
+			return fmt.Errorf("create dir faild")
+		}
+		response := handler.Handle(&request)
+		assert.False(response.IsAllSucceed)
+		assert.Equal(2, len(response.Items))
+		assert.Equal(testAiKey, response.Items[0].SourceKey)
+		assert.False(response.Items[0].IsSucceed)
+		assert.Equal("create dir faild", response.Items[0].Message)
+		assert.Equal(testPsdKey, response.Items[1].SourceKey)
+		assert.False(response.Items[1].IsSucceed)
+		assert.Equal("key not exist", response.Items[1].Message)
+		osMakeDir = os.MkdirAll
+	})
+
 	t.Run("upload faild", func(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewUploadFaildGetFisrtImageByGavingKeyRequestHandler()
@@ -240,17 +285,26 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 	})
 
 	t.Run("source fileKey wrong", func(t *testing.T) {
+		wrongKey := "img/1ai"
 		RegisterMockedConverters()
-		handler := NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler()
+		handler, _ := NewGetFisrtImageByGavingKeyRequestHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
+		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: wrongKey, IsDestory: false}, nil).Once()
+		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil).Once()
+		mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
+		handler.itemHandler.getFileSize = func(filePath string) int64 {
+			return 8000
+		}
+		handler.itemHandler.s3Helper = mockedS3Helper
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
-		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: "img/1ai", TargetKey: "img/1.jpeg"})
+		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: wrongKey, TargetKey: "img/1.jpeg"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
 		response := handler.Handle(&request)
 		assert.False(response.IsAllSucceed)
 		assert.Equal(2, len(response.Items))
-		assert.Equal("img/1ai", response.Items[0].SourceKey)
+		assert.Equal(wrongKey, response.Items[0].SourceKey)
 		assert.False(response.Items[0].IsSucceed)
-		assert.Equal("wrong sourceKey, sourceKey:img/1ai", response.Items[0].Message)
+		assert.Equal(fmt.Sprintf("wrong sourceFileName, sourceFileName:%s", wrongKey), response.Items[0].Message)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.True(response.Items[1].IsSucceed)
 		assert.Empty(response.Items[1].Message)
@@ -258,7 +312,15 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 
 	t.Run("target fileKey wrong", func(t *testing.T) {
 		RegisterMockedConverters()
-		handler := NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler()
+		handler, _ := NewGetFisrtImageByGavingKeyRequestHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
+		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testAiKey, IsDestory: false}, nil).Once()
+		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testTempJpeg, IsDestory: false}, nil).Once()
+		mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
+		handler.itemHandler.getFileSize = func(filePath string) int64 {
+			return 8000
+		}
+		handler.itemHandler.s3Helper = mockedS3Helper
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1jpeg"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
@@ -267,7 +329,7 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.Equal(2, len(response.Items))
 		assert.Equal(testAiKey, response.Items[0].SourceKey)
 		assert.False(response.Items[0].IsSucceed)
-		assert.Equal("wrong targetKey, targetKey:img/1jpeg", response.Items[0].Message)
+		assert.Equal("wrong targetFileName, targetFileName:img/1jpeg", response.Items[0].Message)
 		assert.Equal(testPsdKey, response.Items[1].SourceKey)
 		assert.True(response.Items[1].IsSucceed)
 		assert.Empty(response.Items[1].Message)
@@ -275,7 +337,15 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 
 	t.Run("converter not found", func(t *testing.T) {
 		RegisterNoConverters()
-		handler := NewDownloadFaildGetFisrtImageByGavingKeyRequestHandler()
+		handler, _ := NewGetFisrtImageByGavingKeyRequestHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
+		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testAiKey, IsDestory: false}, nil).Once()
+		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: testPsdKey, IsDestory: false}, nil).Once()
+		mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
+		handler.itemHandler.getFileSize = func(filePath string) int64 {
+			return 8000
+		}
+		handler.itemHandler.s3Helper = mockedS3Helper
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testAiKey, TargetKey: "img/1.jpeg"})
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: testPsdKey, TargetKey: "img/2.jpeg"})
@@ -306,4 +376,13 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		assert.False(response.Items[1].IsSucceed)
 		assert.Equal("convert to image error", response.Items[1].Message)
 	})
+}
+
+func TestFileSize(t *testing.T) {
+	httpFileDownloadDir := t.TempDir()
+	assert := assert.New(t)
+	filePath := path.Join(httpFileDownloadDir, "1.txt")
+	f, _ := file.CreateFileAndReturnFile(filePath)
+	f.Close()
+	assert.Equal(int64(0), fileSize(filePath))
 }

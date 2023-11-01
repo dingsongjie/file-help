@@ -2,7 +2,6 @@ package s3helper
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"www.github.com/dingsongjie/file-help/pkg/file"
 
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
@@ -25,7 +25,7 @@ var (
 )
 
 type S3Helper interface {
-	DownLoadAndReturnLocalPath(fileKey string) (*LocalFileHandle, error)
+	DownLoadAndReturnLocalPath(fileKey string) (*file.LocalFileHandle, error)
 	Upload(localPath string, fileKey string) (err error)
 }
 
@@ -37,7 +37,7 @@ type S3DefaultHelper struct {
 	tempPath   string
 }
 
-func NewS3Helper(endpoint, accessKey, secretKey, bucketName string) (S3Helper, error) {
+func NewS3Helper(endpoint, accessKey, secretKey, bucketName string) S3Helper {
 	sess := safelyCreateOrGetSession(endpoint, accessKey, secretKey, bucketName)
 	instance := &S3DefaultHelper{
 		bucketName: bucketName,
@@ -46,7 +46,7 @@ func NewS3Helper(endpoint, accessKey, secretKey, bucketName string) (S3Helper, e
 		uploader:   s3manager.NewUploader(*sess),
 		tempPath:   os.TempDir(),
 	}
-	return instance, nil
+	return instance
 }
 
 func safelyCreateOrGetSession(endpoint, accessKey, secretKey, bucketName string) *client.ConfigProvider {
@@ -67,22 +67,17 @@ func safelyCreateOrGetSession(endpoint, accessKey, secretKey, bucketName string)
 	return &sess
 }
 
-func (r *S3DefaultHelper) DownLoadAndReturnLocalPath(fileKey string) (*LocalFileHandle, error) {
+func (r *S3DefaultHelper) DownLoadAndReturnLocalPath(fileKey string) (*file.LocalFileHandle, error) {
 	filename := path.Join(r.tempPath, fileKey)
 	var (
 		f   *os.File = nil
 		err error
 	)
-	if !isFileExist(filename) {
-		err = os.MkdirAll(path.Dir(filename), 0770)
-		if err != nil {
-			return nil, err
-		}
-		// 这里的err不可能发生，所以忽略错误返回
-		f, _ = os.Create(filename)
+	if !file.IsFileExist(filename) {
+		f, _ = file.CreateFileAndReturnFile(filename)
 		defer f.Close()
 	} else {
-		handle := LocalFileHandle{Path: filename, IsDestory: false}
+		handle := file.LocalFileHandle{Path: filename, IsDestory: false}
 		return &handle, nil
 	}
 	_, err = r.downloader.Download(f, &s3.GetObjectInput{
@@ -96,7 +91,7 @@ func (r *S3DefaultHelper) DownLoadAndReturnLocalPath(fileKey string) (*LocalFile
 		fmt.Print(err2)
 		return nil, err
 	}
-	handle := LocalFileHandle{Path: filename, IsDestory: false}
+	handle := file.LocalFileHandle{Path: filename, IsDestory: false}
 	return &handle, nil
 }
 
@@ -117,13 +112,6 @@ func (r S3DefaultHelper) Upload(localPath string, fileKey string) (err error) {
 		return fmt.Errorf("failed to upload file, %v", err)
 	}
 	return nil
-}
-
-func isFileExist(path string) bool {
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		return false
-	}
-	return true
 }
 
 func getContentType(file *os.File) (string, *bytes.Reader) {

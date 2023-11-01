@@ -38,10 +38,10 @@ func NewConverter() *ImagickConverter {
 	return instance
 }
 
-func (r *ImagickConverter) convertToPdf(inputFile string, outputFile string, firstPage bool) error {
-	if firstPage {
-		inputFile = inputFile + "[0]"
-	}
+func (r *ImagickConverter) convertToPdf(inputFile string, outputFile string) error {
+	// if firstPage {
+	// 	inputFile = inputFile + "[0]"
+	// }
 	_, err := imagick.ConvertImageCommand([]string{"convert", inputFile, outputFile})
 	if err != nil {
 		log.Logger.Error(err.Error())
@@ -61,7 +61,7 @@ func (r *ImagickConverter) ToFastImage(inputFile string, outputFile string, dpi 
 }
 
 func (r *ImagickConverter) ToPrettyPdf(inputFile string, outputFile string) error {
-	return r.convertToPdf(inputFile, outputFile, false)
+	return r.convertToPdf(inputFile, outputFile)
 }
 
 func (r *ImagickConverter) convertToJpeg(inputFile string, outputFile string, firstPage bool, dpi int) error {

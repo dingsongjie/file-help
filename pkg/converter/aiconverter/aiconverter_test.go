@@ -7,6 +7,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/MrSaints/go-ghostscript/ghostscript"
 	"github.com/stretchr/testify/assert"
 	"www.github.com/dingsongjie/file-help/pkg/converter"
 	"www.github.com/dingsongjie/file-help/pkg/log"
@@ -125,6 +126,37 @@ func TestToFastJpeg(t *testing.T) {
 		wg.Wait()
 	})
 
+	t.Run("get revision faild", func(t *testing.T) {
+		converter := NewConverter()
+		aiAbsolutePath := path.Join(mydir, "./test/assets/3.pdf")
+		outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-3.jpeg")
+		gsGetRevision = func() (ghostscript.Revision, error) {
+			return ghostscript.Revision{}, fmt.Errorf("get revision faild")
+		}
+		logGetRevisionFaild = func(err error, rev ghostscript.Revision) {
+			assert.NotNil(err)
+			assert.Equal("get revision faild", err.Error())
+		}
+		err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, defaultDpi)
+		assert.Nil(err)
+		gsGetRevision = ghostscript.GetRevision
+	})
+
+	// t.Run("new instance faild", func(t *testing.T) {
+	// 	converter := NewConverter()
+	// 	aiAbsolutePath := path.Join(mydir, "./test/assets/3.pdf")
+	// 	outputAbsolutePath := path.Join(mydir, "./test/outputs/pdf-3.jpeg")
+	// 	gsNewInstance = func() (*ghostscript.Ghostscript, error) {
+	// 		return nil, fmt.Errorf("new instance faild")
+	// 	}
+	// 	logNewInstanceFaild = func(err error) {
+	// 		assert.NotNil(err)
+	// 		assert.Equal("new instance faild", err.Error())
+	// 	}
+	// 	err := converter.ToFastImage(aiAbsolutePath, outputAbsolutePath, defaultDpi)
+	// 	assert.Nil(err)
+	// 	gsNewInstance = ghostscript.NewInstance
+	// })
 }
 func TestToPrettyPdf(t *testing.T) {
 	log.Initialise()
