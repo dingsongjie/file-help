@@ -33,6 +33,11 @@ func (r *mockedS3Helper) DownLoadAndReturnLocalPath(fileKey string) (*file.Local
 	return (args.Get(0)).(*file.LocalFileHandle), args.Error(1)
 }
 
+func (r *mockedS3Helper) DownLoadAndReturnBuffer(fileKey string) ([]byte, error) {
+	args := r.Called(fileKey)
+	return (args.Get(0)).([]byte), args.Error(1)
+}
+
 func (r *mockedS3Helper) Upload(localPath string, fileKey string) (err error) {
 	args := r.Called(localPath, fileKey)
 	return args.Error(0)

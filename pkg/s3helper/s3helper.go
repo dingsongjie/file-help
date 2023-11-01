@@ -27,6 +27,7 @@ var (
 type S3Helper interface {
 	DownLoadAndReturnLocalPath(fileKey string) (*file.LocalFileHandle, error)
 	Upload(localPath string, fileKey string) (err error)
+	DownLoadAndReturnBuffer(fileKey string) ([]byte, error)
 }
 
 type S3DefaultHelper struct {
@@ -93,6 +94,18 @@ func (r *S3DefaultHelper) DownLoadAndReturnLocalPath(fileKey string) (*file.Loca
 	}
 	handle := file.LocalFileHandle{Path: filename, IsDestory: false}
 	return &handle, nil
+}
+
+func (r *S3DefaultHelper) DownLoadAndReturnBuffer(fileKey string) ([]byte, error) {
+	buff := &aws.WriteAtBuffer{}
+	_, err := r.downloader.Download(buff, &s3.GetObjectInput{
+		Bucket: aws.String(r.bucketName),
+		Key:    aws.String(fileKey),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return buff.Bytes(), nil
 }
 
 func (r S3DefaultHelper) Upload(localPath string, fileKey string) (err error) {

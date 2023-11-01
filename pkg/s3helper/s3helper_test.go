@@ -31,6 +31,11 @@ func (r *mockedDownloader) DownloadWithContext(ctx aws.Context, w io.WriterAt, i
 	return int64(args.Int(0)), args.Error(1)
 }
 
+func (r *mockedDownloader) DownloadWithIterator(ctx aws.Context, iter s3manager.BatchDownloadIterator, opts ...func(*s3manager.Downloader)) error {
+	args := r.Called(ctx, iter, opts)
+	return args.Error(0)
+}
+
 type mockedUploader struct {
 	mock.Mock
 }
@@ -163,6 +168,37 @@ func TestDownLoadAndReturnLocalPath(t *testing.T) {
 	// 	assert.NotNil(err)
 	// })
 
+}
+
+func TestDownLoadAndReturnBuffer(t *testing.T) {
+
+	dir := t.TempDir()
+	assert := assert.New(t)
+	key := "test/1.txt"
+	//fullPath := path.Join(dir, key)
+
+	t.Run("file exist", func(t *testing.T) {
+		downloader := new(mockedDownloader)
+		downloader.On("Download", mock.Anything, mock.Anything, mock.Anything).Return(2, nil).Run(func(args mock.Arguments) {
+			buffer := args.Get(0).(*aws.WriteAtBuffer)
+			buffer.WriteAt([]byte{'A', 'B'}, 0)
+		})
+		mockedS3Helper, _ := NewMockedS3Helper(downloader, nil, dir)
+		bytes, err := mockedS3Helper.DownLoadAndReturnBuffer(key)
+		assert.Nil(err)
+		assert.Equal(2, len(bytes))
+		assert.Equal('A', int32(bytes[0]))
+		assert.Equal('B', int32(bytes[1]))
+	})
+
+	t.Run("download err", func(t *testing.T) {
+		downloader := new(mockedDownloader)
+		downloader.On("Download", mock.Anything, mock.Anything, mock.Anything).Return(0, fmt.Errorf("test error"))
+		key := "test/3.txt"
+		mockedS3Helper, _ := NewMockedS3Helper(downloader, nil, dir)
+		_, err := mockedS3Helper.DownLoadAndReturnBuffer(key)
+		assert.NotNil(err)
+	})
 }
 
 func TestUpload(t *testing.T) {
