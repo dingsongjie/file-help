@@ -56,10 +56,14 @@ func (r *DefaultTarHepler) Pack(request ExecuteContext) error {
 		}
 		// 创建tar文件头
 		header := &tar.Header{
-			Name:    item.FileName,
-			Size:    fileInfo.Size(),
-			Mode:    int64(fileInfo.Mode()),
+			Name: item.FileName,
+			Size: fileInfo.Size(),
+			//Mode:    int64(fileInfo.Mode()),
 			ModTime: item.LastModifyTime,
+			//Format:  tar.FormatGNU,
+			// PAXRecords: map[string]string{
+			// 	"filename": item.FileName, // 使用Unicode编码文件名
+			// },
 		}
 		err = tarWriter.WriteHeader(header)
 		if err != nil {
@@ -75,6 +79,7 @@ func (r *DefaultTarHepler) Pack(request ExecuteContext) error {
 		if err != nil {
 			return err
 		}
+
 	}
 	return nil
 }

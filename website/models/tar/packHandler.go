@@ -1,16 +1,20 @@
 package tar
 
 import (
+	"net/url"
 	"os"
 	"path"
 
 	"github.com/STRockefeller/go-linq"
 	"github.com/google/uuid"
+	"www.github.com/dingsongjie/file-help/pkg/file"
 	fileHelper "www.github.com/dingsongjie/file-help/pkg/file"
 	"www.github.com/dingsongjie/file-help/pkg/s3helper"
 	"www.github.com/dingsongjie/file-help/pkg/tar"
 	"www.github.com/dingsongjie/file-help/website/models"
 )
+
+var downloadHttpFile = fileHelper.DownLoadAndReturnLocalPath
 
 type PackHandler struct {
 	s3Helper  s3helper.S3Helper
@@ -97,7 +101,14 @@ func (r *PackHandler) concurrentDownload(items *[]PackRequestItem) (*[]*PackHand
 	}, wantedCount)
 	for _, item := range *items {
 		go func(current PackRequestItem) {
-			file, err := r.s3Helper.DownLoadAndReturnLocalPath(current.FileKey)
+			var file *file.LocalFileHandle
+			var err error
+			if isValidURL(current.FileKey) {
+				file, err = downloadHttpFile(current.FileKey, current.FileName)
+			} else {
+				file, err = r.s3Helper.DownLoadAndReturnLocalPath(current.FileKey)
+			}
+
 			if err != nil {
 				channel <- struct {
 					file    *fileHelper.LocalFileHandle
@@ -121,4 +132,16 @@ func (r *PackHandler) concurrentDownload(items *[]PackRequestItem) (*[]*PackHand
 		results = append(results, &PackHandlerInternalModel{file: current.file, fileKey: current.fileKey})
 	}
 	return &results, nil
+}
+
+func isValidURL(input string) bool {
+	u, err := url.ParseRequestURI(input)
+	if err != nil {
+		// 解析失败，URL无效
+		return false
+	}
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return false
+	}
+	return true
 }

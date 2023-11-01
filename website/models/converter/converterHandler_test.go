@@ -192,7 +192,7 @@ func TestGetFisrtImageByGavingKeyRequestHandlerHandle(t *testing.T) {
 		RegisterMockedConverters()
 		handler := NewMockedGetFisrtImageByGavingKeyRequestHandler()
 		request := ConvertByGavingKeyRequest{Items: linq.Linq[ConvertByGavingKeyRequestItem]{}}
-		downloadHttpFile = func(url string) (*file.LocalFileHandle, error) {
+		downloadHttpFile = func(url, fileName string) (*file.LocalFileHandle, error) {
 			return &file.LocalFileHandle{Path: "img/2.jpeg", IsDestory: false}, nil
 		}
 		request.Items = append(request.Items, ConvertByGavingKeyRequestItem{SourceKey: "http://www.baidu.com/1.ai", TargetKey: "img/1.jpeg", TargetFileDpi: 90})

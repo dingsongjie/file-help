@@ -72,24 +72,29 @@ func TestPackHandlerHandle(t *testing.T) {
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath1, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath2, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath3, IsDestory: false}, nil).Once()
-		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath4, IsDestory: false}, nil).Once()
+		//mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath4, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("Upload", mock.Anything, mock.Anything).Return(nil)
 		handler.s3Helper = mockedS3Helper
 		mockedTarHelper := new(mockedTarHelper)
 		mockedTarHelper.On("Pack", mock.Anything).Return(nil)
 		handler.tarHelper = mockedTarHelper
+		downloadHttpFile = func(url, fileName string) (*file.LocalFileHandle, error) {
+			return &file.LocalFileHandle{Path: filePath4, IsDestory: false}, nil
+		}
 
 		request := PackRequest{FileKey: "/path1/1.tar", IsGziped: false}
 		var items []PackRequestItem
 		items = append(items, PackRequestItem{FileKey: fileKey1, FileName: fileName1, LastModifyTime: time.Now()})
 		items = append(items, PackRequestItem{FileKey: fileKey2, FileName: fileName2, LastModifyTime: time.Now()})
 		items = append(items, PackRequestItem{FileKey: fileKey3, FileName: fileName3, LastModifyTime: time.Now()})
-		items = append(items, PackRequestItem{FileKey: fileKey4, FileName: fileName4, LastModifyTime: time.Now()})
+		items = append(items, PackRequestItem{FileKey: "http://www.baidu.com/17.png", FileName: fileName4, LastModifyTime: time.Now()})
 		request.Items = &items
 		response := handler.Handle(&request)
 		assert.True(response.IsSuccessd)
 		assert.Empty(response.Message)
+		downloadHttpFile = file.DownLoadAndReturnLocalPath
 	})
+
 	t.Run("download faild handle", func(t *testing.T) {
 		handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
 		mockedS3Helper := new(mockedS3Helper)

@@ -14,9 +14,10 @@ var (
 	httpFileDownloadDir     = os.TempDir()
 	httpGet                 = http.Get
 	createFileAndReturnFile = CreateFileAndReturnFile
+	ioCopy                  = io.Copy
 )
 
-func DownLoadAndReturnLocalPath(url string) (*LocalFileHandle, error) {
+func DownLoadAndReturnLocalPath(url, fileName string) (*LocalFileHandle, error) {
 	response, err := httpGet(url)
 	if err != nil {
 		return nil, err
@@ -28,23 +29,26 @@ func DownLoadAndReturnLocalPath(url string) (*LocalFileHandle, error) {
 		return nil, fmt.Errorf("HTTP request failed with status: %s", response.Status)
 	}
 	// 从Content-Disposition标头中获取文件名
-	filename := response.Header.Get("Content-Disposition")
-	if filename == "" {
-		u, _ := urlUtil.Parse(url)
+	if fileName == "" {
+		fileName = response.Header.Get("Content-Disposition")
+		if fileName == "" {
+			u, _ := urlUtil.Parse(url)
 
-		// 获取URL路径中的文件名
-		filename = filepath.Base(u.Path)
+			// 获取URL路径中的文件名
+			fileName = filepath.Base(u.Path)
+		}
+		if fileName == "" || fileName == "." {
+			return nil, fmt.Errorf("Content-Disposition not found in http response and also we can not get filename from request url,url: %s", url)
+		}
 	}
-	if filename == "" || filename == "." {
-		return nil, fmt.Errorf("Content-Disposition not found in http response and also we can not get filename from request url,url: %s", url)
-	}
-	filePath := path.Join(httpFileDownloadDir, filename)
+
+	filePath := path.Join(httpFileDownloadDir, fileName)
 	f, err := createFileAndReturnFile(filePath)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	_, err = io.Copy(f, response.Body)
+	_, err = ioCopy(f, response.Body)
 	if err != nil {
 		return nil, err
 	}

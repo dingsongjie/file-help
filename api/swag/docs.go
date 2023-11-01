@@ -304,6 +304,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "fileKey": {
+                    "description": "@description 如果此参数是一个合法的url则会根据url获取文件，否则视为minio文件key",
                     "type": "string"
                 },
                 "fileName": {

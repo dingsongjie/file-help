@@ -117,7 +117,7 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) downloadSourceFile(key stri
 	)
 
 	if isValidURL(key) {
-		file, err = downloadHttpFile(key)
+		file, err = downloadHttpFile(key, "")
 	} else {
 		file, err = r.s3Helper.DownLoadAndReturnLocalPath(key)
 	}
@@ -137,8 +137,15 @@ func (r *GetFisrtImageByGavingKeyRequestItemHandler) uploadTargetFile(localPath,
 }
 
 func isValidURL(input string) bool {
-	_, err := url.ParseRequestURI(input)
-	return err == nil
+	u, err := url.ParseRequestURI(input)
+	if err != nil {
+		// 解析失败，URL无效
+		return false
+	}
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return false
+	}
+	return true
 }
 
 func fileSize(filePath string) int64 {
