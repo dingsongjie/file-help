@@ -10,11 +10,11 @@ import (
 
 var imgDecode = image.Decode
 
-type imgInfo struct {
+type ImgInfo struct {
 	Width, Height int
 }
 
-func GetimgInfo(buffer []byte) (*imgInfo, error) {
+func GetImgInfo(buffer []byte) (*ImgInfo, error) {
 	img, _, err := imgDecode(bytes.NewReader(buffer))
 	if err != nil {
 		return nil, err
@@ -23,5 +23,5 @@ func GetimgInfo(buffer []byte) (*imgInfo, error) {
 	// 获取图像的宽度和高度
 	width := img.Bounds().Dx()
 	height := img.Bounds().Dy()
-	return &imgInfo{Width: width, Height: height}, nil
+	return &ImgInfo{Width: width, Height: height}, nil
 }

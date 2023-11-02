@@ -4,30 +4,26 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"www.github.com/dingsongjie/file-help/configs"
-	"www.github.com/dingsongjie/file-help/website/models/tar"
+	"www.github.com/dingsongjie/file-help/website/models/imginfo"
 )
 
 // @Security BearerAuth
 // GetImgInfo
 // @Summary GetImgInfo
-// @Description GetImgInfo
+// @Description 批量获取图片宽高，只支持png,jpg,gif类型图片
 // @Tags GetImgInfo
 // @Accept json
 // @Produce json
-// @param request body tar.PackRequest  true "request"
-// @Success 200  {object} models.CommandResponse
+// @param request body imginfo.GetImgInfoRequest  true "request"
+// @Success 200  {object} imginfo.GetImgInfoResponse
 // @Failure 400  {object} models.CommonErrorResponse
 // @Router /GetImgInfo [post]
 func GetImgInfo(c *gin.Context) {
-	var request = tar.PackRequest{}
+	var request = imginfo.GetImgInfoRequest{}
 	if err := c.BindJSON(&request); err != nil {
 		return
 	}
-	handler, err := tar.NewPackHandler(configs.S3Endpoint, configs.S3AccessKey, configs.S3SecretKey, configs.S3BacketName)
-	if err != nil {
-		c.AbortWithError(500, err)
-	}
-	response := handler.Handle(&request)
+	query := imginfo.NewImgInfoQueries()
+	response := query.GetImgInfo(&request)
 	c.JSON(http.StatusOK, response)
 }

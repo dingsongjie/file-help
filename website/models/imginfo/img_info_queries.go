@@ -6,13 +6,22 @@ import (
 	"www.github.com/dingsongjie/file-help/pkg/s3helper"
 )
 
-var newS3Helper = func() s3helper.S3Helper {
-	helper := s3helper.NewS3Helper(configs.S3Endpoint, configs.S3AccessKey, configs.S3SecretKey, configs.S3BacketName)
-	return helper
+type ImgInfoQueries struct {
+	s3Helper s3helper.S3Helper
 }
 
-func GetImgInfo(request *GetImgInfoRequest) *GetImgInfoResponse {
-	s3HelperInstance := newS3Helper()
+var (
+	getImgInfo = img.GetImgInfo
+)
+
+func NewImgInfoQueries() *ImgInfoQueries {
+	queries := ImgInfoQueries{}
+	queries.s3Helper = s3helper.NewS3Helper(configs.S3Endpoint, configs.S3AccessKey, configs.S3SecretKey, configs.S3BacketName)
+	return &queries
+}
+
+func (r *ImgInfoQueries) GetImgInfo(request *GetImgInfoRequest) *GetImgInfoResponse {
+	s3HelperInstance := r.s3Helper
 	response := NewGetImgInfoResponse()
 	for _, item := range request.Items {
 		bytes, err := s3HelperInstance.DownLoadAndReturnBuffer(item.FileKey)
@@ -20,7 +29,7 @@ func GetImgInfo(request *GetImgInfoRequest) *GetImgInfoResponse {
 			response.AddItem(&GetImgInfoItemResponse{FileKey: item.FileKey, IsSucceed: false, Message: err.Error()})
 			continue
 		}
-		info, err := img.GetimgInfo(bytes)
+		info, err := getImgInfo(bytes)
 		if err != nil {
 			response.AddItem(&GetImgInfoItemResponse{FileKey: item.FileKey, IsSucceed: false, Message: err.Error()})
 			continue

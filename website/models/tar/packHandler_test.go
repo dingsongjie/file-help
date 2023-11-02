@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"www.github.com/dingsongjie/file-help/pkg/file"
+	"www.github.com/dingsongjie/file-help/pkg/mocks"
 	"www.github.com/dingsongjie/file-help/pkg/tar"
 )
 
@@ -29,20 +30,6 @@ var (
 	fileName3        string = "100.png"
 	fileName4        string = "17.png"
 )
-
-type mockedS3Helper struct {
-	mock.Mock
-}
-
-func (r *mockedS3Helper) DownLoadAndReturnLocalPath(fileKey string) (*file.LocalFileHandle, error) {
-	args := r.Called(fileKey)
-	return (args.Get(0)).(*file.LocalFileHandle), args.Error(1)
-}
-
-func (r *mockedS3Helper) Upload(localPath string, fileKey string) (err error) {
-	args := r.Called(localPath, fileKey)
-	return args.Error(0)
-}
 
 type mockedTarHelper struct {
 	mock.Mock
@@ -68,7 +55,7 @@ func TestPackHandlerHandle(t *testing.T) {
 
 	t.Run("success handle", func(t *testing.T) {
 		handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
-		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper := new(mocks.MockedS3Helper)
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath1, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath2, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath3, IsDestory: false}, nil).Once()
@@ -97,7 +84,7 @@ func TestPackHandlerHandle(t *testing.T) {
 
 	t.Run("download faild handle", func(t *testing.T) {
 		handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
-		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper := new(mocks.MockedS3Helper)
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath1, IsDestory: false}, errors.New("download faild")).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath2, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath3, IsDestory: false}, nil).Once()
@@ -121,7 +108,7 @@ func TestPackHandlerHandle(t *testing.T) {
 
 	t.Run("upload faild handle", func(t *testing.T) {
 		handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
-		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper := new(mocks.MockedS3Helper)
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath1, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath2, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath3, IsDestory: false}, nil).Once()
@@ -145,7 +132,7 @@ func TestPackHandlerHandle(t *testing.T) {
 
 	t.Run("pack faild", func(t *testing.T) {
 		handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
-		mockedS3Helper := new(mockedS3Helper)
+		mockedS3Helper := new(mocks.MockedS3Helper)
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath1, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath2, IsDestory: false}, nil).Once()
 		mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Return(&file.LocalFileHandle{Path: filePath3, IsDestory: false}, nil).Once()
@@ -170,7 +157,7 @@ func TestPackHandlerHandle(t *testing.T) {
 
 func BenchmarkPackHandlerHandle(b *testing.B) {
 	handler, _ := NewPackHandler(testS3Endpoint, testS3AccessKey, testS3SecretKey, testS3BucketName)
-	mockedS3Helper := new(mockedS3Helper)
+	mockedS3Helper := new(mocks.MockedS3Helper)
 	mockedS3Helper.On("DownLoadAndReturnLocalPath", mock.Anything).Run(func(args mock.Arguments) {
 		time.Sleep(300 * time.Microsecond)
 	}).Return(&file.LocalFileHandle{Path: filePath1, IsDestory: false}, nil)

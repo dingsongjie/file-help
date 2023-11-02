@@ -49,6 +49,49 @@ definitions:
     - isSucceed
     - sourceKey
     type: object
+  imginfo.GetImgInfoItemResponse:
+    properties:
+      fileKey:
+        type: string
+      isSucceed:
+        type: boolean
+      message:
+        type: string
+      width:
+        type: integer
+    required:
+    - fileKey
+    type: object
+  imginfo.GetImgInfoRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/imginfo.GetImgInfoRequestItem'
+        maxItems: 20
+        minItems: 1
+        type: array
+    required:
+    - items
+    type: object
+  imginfo.GetImgInfoRequestItem:
+    properties:
+      fileKey:
+        description: '@description minio文件key'
+        type: string
+    type: object
+  imginfo.GetImgInfoResponse:
+    properties:
+      isAllSucceed:
+        type: boolean
+      items:
+        items:
+          $ref: '#/definitions/imginfo.GetImgInfoItemResponse'
+        maxItems: 20
+        minItems: 1
+        type: array
+    required:
+    - items
+    type: object
   models.AclError:
     properties:
       code:
@@ -115,7 +158,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: GetFisrtImageByGavingKey
+      description: 根据文件key或者文件url获取文件并转成相应的目标图片，只转第一个图层或者第一页，目前支持psd->jpeg;ai->jpeg;pdf->jpeg
       parameters:
       - description: request
         in: body
@@ -143,7 +186,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: GetPdfByGavingKey
+      description: 根据文件key或者文件url获取文件并转成相应的目标pdf，只转第一个图层或者第一页，目前支持psd->pdf;ai->pdf;pdf->pdf
       parameters:
       - description: request
         in: body
@@ -167,11 +210,39 @@ paths:
       summary: GetPdfByGavingKey
       tags:
       - GetPdfByGavingKey
+  /GetImgInfo:
+    post:
+      consumes:
+      - application/json
+      description: 批量获取图片宽高，只支持png,jpg,gif类型图片
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/imginfo.GetImgInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/imginfo.GetImgInfoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CommonErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetImgInfo
+      tags:
+      - GetImgInfo
   /Tar/Pack:
     post:
       consumes:
       - application/json
-      description: PackByGavingKey
+      description: 根据文件key或者文件url归档，或者归档压缩生成文件
       parameters:
       - description: request
         in: body

@@ -23,7 +23,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "GetFisrtImageByGavingKey",
+                "description": "根据文件key或者文件url获取文件并转成相应的目标图片，只转第一个图层或者第一页，目前支持psd-\u003ejpeg;ai-\u003ejpeg;pdf-\u003ejpeg",
                 "consumes": [
                     "application/json"
                 ],
@@ -68,7 +68,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "GetPdfByGavingKey",
+                "description": "根据文件key或者文件url获取文件并转成相应的目标pdf，只转第一个图层或者第一页，目前支持psd-\u003epdf;ai-\u003epdf;pdf-\u003epdf",
                 "consumes": [
                     "application/json"
                 ],
@@ -106,6 +106,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/GetImgInfo": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "批量获取图片宽高，只支持png,jpg,gif类型图片",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GetImgInfo"
+                ],
+                "summary": "GetImgInfo",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/imginfo.GetImgInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/imginfo.GetImgInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CommonErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/Tar/Pack": {
             "post": {
                 "security": [
@@ -113,7 +158,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "PackByGavingKey",
+                "description": "根据文件key或者文件url归档，或者归档压缩生成文件",
                 "consumes": [
                     "application/json"
                 ],
@@ -224,6 +269,70 @@ const docTemplate = `{
                 },
                 "targetFileSize": {
                     "type": "integer"
+                }
+            }
+        },
+        "imginfo.GetImgInfoItemResponse": {
+            "type": "object",
+            "required": [
+                "fileKey"
+            ],
+            "properties": {
+                "fileKey": {
+                    "type": "string"
+                },
+                "isSucceed": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "imginfo.GetImgInfoRequest": {
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/imginfo.GetImgInfoRequestItem"
+                    }
+                }
+            }
+        },
+        "imginfo.GetImgInfoRequestItem": {
+            "type": "object",
+            "properties": {
+                "fileKey": {
+                    "description": "@description minio文件key",
+                    "type": "string"
+                }
+            }
+        },
+        "imginfo.GetImgInfoResponse": {
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "properties": {
+                "isAllSucceed": {
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/imginfo.GetImgInfoItemResponse"
+                    }
                 }
             }
         },

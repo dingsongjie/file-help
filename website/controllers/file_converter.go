@@ -11,7 +11,7 @@ import (
 // @Security BearerAuth
 // GetFisrtImageByGavingKey
 // @Summary GetFisrtImageByGavingKey
-// @Description GetFisrtImageByGavingKey
+// @Description 根据文件key或者文件url获取文件并转成相应的目标图片，只转第一个图层或者第一页，目前支持psd->jpeg;ai->jpeg;pdf->jpeg
 // @Tags GetFisrtImageByGavingKey
 // @Accept json
 // @Produce json
@@ -35,7 +35,7 @@ func GetFisrtImageByGavingKey(c *gin.Context) {
 // @Security BearerAuth
 // GetPdfByGavingKey
 // @Summary GetPdfByGavingKey
-// @Description GetPdfByGavingKey
+// @Description 根据文件key或者文件url获取文件并转成相应的目标pdf，只转第一个图层或者第一页，目前支持psd->pdf;ai->pdf;pdf->pdf
 // @Tags GetPdfByGavingKey
 // @Accept json
 // @Produce json

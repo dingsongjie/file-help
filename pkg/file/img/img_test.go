@@ -17,7 +17,10 @@ func TestGetimgInfo(t *testing.T) {
 	t.Run("test png seccessful", func(t *testing.T) {
 		imgPath := path.Join(mydir, "./assets/1.png")
 		file, _ := os.Open(imgPath)
-		info, err := GetimgInfo(file)
+		stat, _ := file.Stat()
+		b := make([]byte, stat.Size())
+		file.Read(b)
+		info, err := GetImgInfo(b)
 		assert.Nil(err)
 		assert.Equal(264, info.Width)
 		assert.Equal(161, info.Height)
@@ -25,7 +28,10 @@ func TestGetimgInfo(t *testing.T) {
 	t.Run("test jpg seccessful", func(t *testing.T) {
 		imgPath := path.Join(mydir, "./assets/1.jpg")
 		file, _ := os.Open(imgPath)
-		info, err := GetimgInfo(file)
+		stat, _ := file.Stat()
+		b := make([]byte, stat.Size())
+		file.Read(b)
+		info, err := GetImgInfo(b)
 		assert.Nil(err)
 		assert.Equal(2268, info.Width)
 		assert.Equal(2409, info.Height)
@@ -38,7 +44,7 @@ func TestGetimgInfo(t *testing.T) {
 		imgDecode = func(r io.Reader) (image.Image, string, error) {
 			return nil, "", fmt.Errorf("sample error")
 		}
-		_, err := GetimgInfo(nil)
+		_, err := GetImgInfo(nil)
 
 		assert.NotNil(err)
 		assert.Equal("sample error", err.Error())
