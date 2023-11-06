@@ -24,7 +24,7 @@ ENV CC=gcc
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o /usr/src/app/app ./website
 RUN go test ./...
 
-FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base:v1.4 AS final
+FROM swr.cn-east-3.myhuaweicloud.com/dangqu-public/file-help-base:v1.6 AS final
 
 COPY --from=builder /usr/src/app/app .
 
