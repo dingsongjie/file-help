@@ -13,7 +13,7 @@ type LocalFileHandle struct {
 
 var (
 	osRemove  = os.Remove
-	osMakeDir = os.Mkdir
+	osMakeDir = os.MkdirAll
 	osCreate  = os.Create
 )
 
