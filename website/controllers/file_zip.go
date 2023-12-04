@@ -11,7 +11,7 @@ import (
 // @Security BearerAuth
 // PackByGavingKey
 // @Summary PackByGavingKey
-// @Description 根据文件key或者文件url归档，或者归档压缩生成文件
+// @Description 根据文件key或者文件url归档，或者归档压缩生成文件,目前只支持归档成zip或者zip.gz文件
 // @Tags PackByGavingKey
 // @Accept json
 // @Produce json

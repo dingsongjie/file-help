@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type TarHepler interface {
+type ZipHepler interface {
 	Pack(request ExecuteContext) error
 }
 
@@ -23,15 +23,15 @@ type PackItem struct {
 	LastModifyTime     time.Time
 }
 
-func NewTarHepler() TarHepler {
-	helper := new(DefaultTarHepler)
+func NewZipHepler() ZipHepler {
+	helper := new(DefaultZipHepler)
 	return helper
 }
 
-type DefaultTarHepler struct {
+type DefaultZipHepler struct {
 }
 
-func (r *DefaultTarHepler) Pack(request ExecuteContext) error {
+func (r *DefaultZipHepler) Pack(request ExecuteContext) error {
 	output, err := os.Create(request.FileName)
 	if err != nil {
 		return err

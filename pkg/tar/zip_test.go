@@ -16,7 +16,7 @@ func TestDefaultZipHeplerPack(t *testing.T) {
 	assert := assert.New(t)
 	tempDir := t.TempDir()
 	mydir, _ := os.Getwd()
-	helper := NewTarHepler()
+	helper := NewZipHepler()
 	files := []PackItem{
 		{FilePath: path.Join(mydir, "assets/《个人防疫手册（第二版）》.pdf"),
 			FileName:       path.Join("inner/", "《个人防疫手册（第二版）》.pdf"),
@@ -130,6 +130,6 @@ func TestDefaultZipHeplerPack(t *testing.T) {
 
 func TestNewTarHepler(t *testing.T) {
 	assert := assert.New(t)
-	helper := NewTarHepler()
+	helper := NewZipHepler()
 	assert.NotNil(helper)
 }

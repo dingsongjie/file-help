@@ -146,7 +146,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "根据文件key或者文件url归档，或者归档压缩生成文件",
+                "description": "根据文件key或者文件url归档，或者归档压缩生成文件,目前只支持归档成zip或者zip.gz文件",
                 "consumes": [
                     "application/json"
                 ],
