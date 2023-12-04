@@ -18,7 +18,7 @@ var downloadHttpFile = fileHelper.DownLoadAndReturnLocalPath
 
 type PackHandler struct {
 	s3Helper  s3helper.S3Helper
-	tarHelper tar.TarHepler
+	tarHelper tar.ZipHepler
 }
 
 type PackHandlerInternalModel struct {
@@ -28,7 +28,7 @@ type PackHandlerInternalModel struct {
 
 func NewPackHandler(endpoint, accessKey, secretKey, bucketName string) (*PackHandler, error) {
 	s3helper := s3helper.NewS3Helper(endpoint, accessKey, secretKey, bucketName)
-	tarHelper := tar.NewTarHepler()
+	tarHelper := tar.NewZipHepler()
 
 	handler := PackHandler{s3Helper: s3helper, tarHelper: tarHelper}
 	return &handler, nil
