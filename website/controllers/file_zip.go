@@ -18,6 +18,7 @@ import (
 // @param request body tar.PackRequest  true "request"
 // @Success 200  {object} models.CommandResponse
 // @Failure 400  {object} models.CommonErrorResponse
+// @Router /Zip/Pack [post]
 // @Router /Tar/Pack [post]
 func Pack(c *gin.Context) {
 	var request = tar.PackRequest{}
