@@ -1,7 +1,7 @@
 package tar
 
 import (
-	"archive/tar"
+	"archive/zip"
 	"compress/gzip"
 	"io"
 	"os"
@@ -37,17 +37,17 @@ func (r *DefaultTarHepler) Pack(request ExecuteContext) error {
 		return err
 	}
 	defer output.Close()
-	var tarWriter *tar.Writer = nil
+	var zipWriter *zip.Writer = nil
 	if request.IsGziped {
 		// 创建gzip压缩器
 		gzWriter := gzip.NewWriter(output)
 		defer gzWriter.Close()
-		tarWriter = tar.NewWriter(gzWriter)
+		zipWriter = zip.NewWriter(gzWriter)
 	} else {
-		tarWriter = tar.NewWriter(output)
+		zipWriter = zip.NewWriter(output)
 	}
 
-	defer tarWriter.Close()
+	defer zipWriter.Close()
 	for index := range request.Items {
 		item := request.Items[index]
 		fileInfo, err := os.Stat(item.FilePath)
@@ -55,17 +55,14 @@ func (r *DefaultTarHepler) Pack(request ExecuteContext) error {
 			return err
 		}
 		// 创建tar文件头
-		header := &tar.Header{
-			Name: item.FileName,
-			Size: fileInfo.Size(),
-			//Mode:    int64(fileInfo.Mode()),
-			ModTime: item.LastModifyTime,
-			//Format:  tar.FormatGNU,
-			// PAXRecords: map[string]string{
-			// 	"filename": item.FileName, // 使用Unicode编码文件名
-			// },
+		header, err := zip.FileInfoHeader(fileInfo)
+		if err != nil {
+			return err
 		}
-		err = tarWriter.WriteHeader(header)
+		header.Name = item.FileName
+		header.Modified = item.LastModifyTime
+
+		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
 			return err
 		}
@@ -75,7 +72,7 @@ func (r *DefaultTarHepler) Pack(request ExecuteContext) error {
 		}
 		defer file.Close()
 		// 将文件内容复制到tar文件中
-		_, err = io.Copy(tarWriter, file)
+		_, err = io.Copy(writer, file)
 		if err != nil {
 			return err
 		}
