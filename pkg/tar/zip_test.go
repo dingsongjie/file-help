@@ -1,7 +1,7 @@
 package tar
 
 import (
-	"archive/tar"
+	"archive/zip"
 	"compress/gzip"
 	"io"
 	"os"
@@ -12,11 +12,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDefaultTarHeplerPack(t *testing.T) {
+func TestDefaultZipHeplerPack(t *testing.T) {
 	assert := assert.New(t)
 	tempDir := t.TempDir()
 	mydir, _ := os.Getwd()
-	helper := NewTarHepler()
+	helper := NewZipHepler()
 	files := []PackItem{
 		{FilePath: path.Join(mydir, "assets/《个人防疫手册（第二版）》.pdf"),
 			FileName:       path.Join("inner/", "《个人防疫手册（第二版）》.pdf"),
@@ -38,7 +38,7 @@ func TestDefaultTarHeplerPack(t *testing.T) {
 			LastModifyTime: time.Date(2023, time.September, 1, 12, 0, 0, 0, time.UTC)},
 	}
 	t.Run("sample tar", func(t *testing.T) {
-		fileName := path.Join(tempDir, "001.tar")
+		fileName := path.Join(tempDir, "001.zip")
 		request := ExecuteContext{FileName: fileName, IsGziped: false}
 		request.Items = append(request.Items, files...)
 
@@ -46,27 +46,24 @@ func TestDefaultTarHeplerPack(t *testing.T) {
 		assert.Nil(err)
 		_, err = os.Stat(fileName)
 		assert.Nil(err)
-		file, err := os.Open(fileName)
-		assert.Nil(err)
-		defer file.Close()
-		tarReader := tar.NewReader(file)
-		iterations := 0
-		for {
-			header, err := tarReader.Next()
-			if err == io.EOF {
-				// 已到达存档末尾
-				break
-			}
+		// file, err := os.Open(fileName)
+		// assert.Nil(err)
+		// defer file.Close()
+		zipReader, _ := zip.OpenReader(fileName)
+		defer zipReader.Close()
+
+		for iterations := 0; iterations < len(zipReader.File); iterations++ {
+			header := zipReader.File[iterations]
 			currentFile := files[iterations]
 			assert.Equal(currentFile.FileName, header.Name)
-			assert.NotEqual(0, header.Size)
+			assert.NotEqual(0, header.FileInfo().Size())
 			assert.Equal(currentFile.LastModifyTime, time.Date(2023, time.September, 1, 12, 0, 0, 0, time.UTC))
-			iterations++
+
 		}
 	})
 
 	t.Run("sample gzip", func(t *testing.T) {
-		fileName := path.Join(tempDir, "001.tar.gz")
+		fileName := path.Join(tempDir, "001.zip.gz")
 		request := ExecuteContext{FileName: fileName, IsGziped: true}
 		request.Items = append(request.Items, files...)
 
@@ -77,19 +74,22 @@ func TestDefaultTarHeplerPack(t *testing.T) {
 		file, err := os.Open(fileName)
 		assert.Nil(err)
 		defer file.Close()
+		// 创建目标文件
+		outputZipFilePath := path.Join(tempDir, "001.zip")
+		outputFile, _ := os.Create(outputZipFilePath)
 		gzipReader, err := gzip.NewReader(file)
 		assert.Nil(err)
-		tarReader := tar.NewReader(gzipReader)
-		iterations := 0
-		for {
-			header, err := tarReader.Next()
-			if err == io.EOF {
-				// 已到达存档末尾
-				break
-			}
+		defer outputFile.Close()
+		_, err = io.Copy(outputFile, gzipReader)
+		assert.Nil(err)
+		zipReader, err := zip.OpenReader(outputZipFilePath)
+		assert.Nil(err)
+		defer zipReader.Close()
+		for iterations := 0; iterations < len(zipReader.File); iterations++ {
+			header := zipReader.File[iterations]
 			currentFile := files[iterations]
 			assert.Equal(currentFile.FileName, header.Name)
-			assert.NotEqual(0, header.Size)
+			assert.NotEqual(0, header.FileInfo().Size())
 			assert.Equal(currentFile.LastModifyTime, time.Date(2023, time.September, 1, 12, 0, 0, 0, time.UTC))
 			iterations++
 		}
@@ -116,7 +116,7 @@ func TestDefaultTarHeplerPack(t *testing.T) {
 				FileName:       "inner22/文档记录下载1690254313410.zip",
 				LastModifyTime: time.Date(2023, time.September, 1, 12, 0, 0, 0, time.UTC)},
 		}
-		fileName := path.Join(tempDir, "001.tar.gz")
+		fileName := path.Join(tempDir, "001.zip.gz")
 		request := ExecuteContext{FileName: fileName, IsGziped: true}
 		request.Items = append(request.Items, files...)
 
@@ -130,6 +130,6 @@ func TestDefaultTarHeplerPack(t *testing.T) {
 
 func TestNewTarHepler(t *testing.T) {
 	assert := assert.New(t)
-	helper := NewTarHepler()
+	helper := NewZipHepler()
 	assert.NotNil(helper)
 }

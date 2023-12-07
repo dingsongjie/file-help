@@ -146,7 +146,52 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "根据文件key或者文件url归档，或者归档压缩生成文件",
+                "description": "根据文件key或者文件url归档，或者归档压缩生成文件,目前只支持归档成zip或者zip.gz文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PackByGavingKey"
+                ],
+                "summary": "PackByGavingKey",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tar.PackRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CommandResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CommonErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/Zip/Pack": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "根据文件key或者文件url归档，或者归档压缩生成文件,目前只支持归档成zip或者zip.gz文件",
                 "consumes": [
                     "application/json"
                 ],

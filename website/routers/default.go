@@ -33,6 +33,7 @@ func AddRouter(r *gin.Engine) *gin.Engine {
 		fileheler.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		fileheler.POST("/Converter/GetFisrtImageByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetFisrtImageByGavingKey)
 		fileheler.POST("/Converter/GetPdfByGavingKey", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetPdfByGavingKey)
+		fileheler.POST("/Zip/Pack", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.Pack)
 		fileheler.POST("/Tar/Pack", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.Pack)
 		fileheler.POST("/GetImgInfo", ginoauth2.Auth(AudAndScopeCheck("default", configs.OIDCAudience, configs.OIDCScope), oauth2Enpoint), controllers.GetImgInfo)
 	}

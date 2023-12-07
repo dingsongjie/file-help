@@ -242,7 +242,35 @@ paths:
     post:
       consumes:
       - application/json
-      description: 根据文件key或者文件url归档，或者归档压缩生成文件
+      description: 根据文件key或者文件url归档，或者归档压缩生成文件,目前只支持归档成zip或者zip.gz文件
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tar.PackRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CommandResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CommonErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: PackByGavingKey
+      tags:
+      - PackByGavingKey
+  /Zip/Pack:
+    post:
+      consumes:
+      - application/json
+      description: 根据文件key或者文件url归档，或者归档压缩生成文件,目前只支持归档成zip或者zip.gz文件
       parameters:
       - description: request
         in: body
