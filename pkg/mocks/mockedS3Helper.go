@@ -1,8 +1,8 @@
 package mocks
 
 import (
+	"github.com/dingsongjie/file-help/pkg/file"
 	"github.com/stretchr/testify/mock"
-	"www.github.com/dingsongjie/file-help/pkg/file"
 )
 
 type MockedS3Helper struct {

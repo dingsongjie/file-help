@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/dingsongjie/file-help/pkg/file/img"
+	"github.com/dingsongjie/file-help/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"www.github.com/dingsongjie/file-help/pkg/file/img"
-	"www.github.com/dingsongjie/file-help/pkg/mocks"
 )
 
 func TestGetImgInfo(t *testing.T) {

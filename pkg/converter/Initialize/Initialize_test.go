@@ -3,11 +3,11 @@ package Initialize
 import (
 	"testing"
 
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/converter/aiconverter"
+	"github.com/dingsongjie/file-help/pkg/converter/imagickconverter"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"github.com/stretchr/testify/assert"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/converter/aiconverter"
-	"www.github.com/dingsongjie/file-help/pkg/converter/imagickconverter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 func TestRegisterConverters(t *testing.T) {

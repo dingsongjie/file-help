@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/MrSaints/go-ghostscript/ghostscript"
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"github.com/stretchr/testify/assert"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var assertAI3 string = "./test/assets/3.ai"

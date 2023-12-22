@@ -6,12 +6,12 @@ import (
 	"path"
 
 	"github.com/STRockefeller/go-linq"
+	"github.com/dingsongjie/file-help/pkg/file"
+	fileHelper "github.com/dingsongjie/file-help/pkg/file"
+	"github.com/dingsongjie/file-help/pkg/s3helper"
+	"github.com/dingsongjie/file-help/pkg/tar"
+	"github.com/dingsongjie/file-help/website/models"
 	"github.com/google/uuid"
-	"www.github.com/dingsongjie/file-help/pkg/file"
-	fileHelper "www.github.com/dingsongjie/file-help/pkg/file"
-	"www.github.com/dingsongjie/file-help/pkg/s3helper"
-	"www.github.com/dingsongjie/file-help/pkg/tar"
-	"www.github.com/dingsongjie/file-help/website/models"
 )
 
 var downloadHttpFile = fileHelper.DownLoadAndReturnLocalPath

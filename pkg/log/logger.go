@@ -3,7 +3,7 @@ package log
 import (
 	"sync"
 
-	"www.github.com/dingsongjie/file-help/configs"
+	"github.com/dingsongjie/file-help/configs"
 
 	"go.uber.org/zap"
 )

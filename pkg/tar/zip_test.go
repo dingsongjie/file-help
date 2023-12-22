@@ -18,8 +18,8 @@ func TestDefaultZipHeplerPack(t *testing.T) {
 	mydir, _ := os.Getwd()
 	helper := NewZipHepler()
 	files := []PackItem{
-		{FilePath: path.Join(mydir, "assets/《个人防疫手册（第二版）》.pdf"),
-			FileName:       path.Join("inner/", "《个人防疫手册（第二版）》.pdf"),
+		{FilePath: path.Join(mydir, "assets/个人防疫手册.pdf"),
+			FileName:       path.Join("inner/", "个人防疫手册.pdf"),
 			LastModifyTime: time.Date(2023, time.September, 1, 12, 0, 0, 0, time.UTC)},
 		{FilePath: path.Join(mydir, "assets/导出外贸ERP.ps1"),
 			FileName:       path.Join("inner/", "导出外贸ERP.ps1"),

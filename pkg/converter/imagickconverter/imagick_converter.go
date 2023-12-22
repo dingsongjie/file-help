@@ -5,9 +5,9 @@ import (
 	"sync"
 
 	"github.com/STRockefeller/go-linq"
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"gopkg.in/gographics/imagick.v3/imagick"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var (

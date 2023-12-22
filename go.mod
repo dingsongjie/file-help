@@ -1,4 +1,4 @@
-module www.github.com/dingsongjie/file-help
+module github.com/dingsongjie/file-help
 
 go 1.20
 

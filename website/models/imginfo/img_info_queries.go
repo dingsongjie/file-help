@@ -1,9 +1,9 @@
 package imginfo
 
 import (
-	"www.github.com/dingsongjie/file-help/configs"
-	"www.github.com/dingsongjie/file-help/pkg/file/img"
-	"www.github.com/dingsongjie/file-help/pkg/s3helper"
+	"github.com/dingsongjie/file-help/configs"
+	"github.com/dingsongjie/file-help/pkg/file/img"
+	"github.com/dingsongjie/file-help/pkg/s3helper"
 )
 
 type ImgInfoQueries struct {

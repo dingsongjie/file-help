@@ -3,9 +3,9 @@ package log
 import (
 	"testing"
 
+	"github.com/dingsongjie/file-help/configs"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
-	"www.github.com/dingsongjie/file-help/configs"
 )
 
 func TestInitialise(t *testing.T) {

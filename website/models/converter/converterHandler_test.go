@@ -7,11 +7,11 @@ import (
 	"testing"
 
 	"github.com/STRockefeller/go-linq"
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/file"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/file"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var (

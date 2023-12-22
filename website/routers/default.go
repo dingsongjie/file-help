@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"time"
 
-	"www.github.com/dingsongjie/file-help/pkg/log"
+	"github.com/dingsongjie/file-help/pkg/log"
 
+	docs "github.com/dingsongjie/file-help/api/swag"
+	"github.com/dingsongjie/file-help/configs"
+	"github.com/dingsongjie/file-help/website/controllers"
 	"golang.org/x/oauth2"
-	docs "www.github.com/dingsongjie/file-help/api/swag"
-	"www.github.com/dingsongjie/file-help/configs"
-	"www.github.com/dingsongjie/file-help/website/controllers"
 
 	"github.com/STRockefeller/go-linq"
 	"github.com/gin-gonic/gin"

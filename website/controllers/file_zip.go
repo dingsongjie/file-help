@@ -3,9 +3,9 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/dingsongjie/file-help/configs"
+	"github.com/dingsongjie/file-help/website/models/tar"
 	"github.com/gin-gonic/gin"
-	"www.github.com/dingsongjie/file-help/configs"
-	"www.github.com/dingsongjie/file-help/website/models/tar"
 )
 
 // @Security BearerAuth

@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dingsongjie/file-help/pkg/file"
+	"github.com/dingsongjie/file-help/pkg/mocks"
+	"github.com/dingsongjie/file-help/pkg/tar"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"www.github.com/dingsongjie/file-help/pkg/file"
-	"www.github.com/dingsongjie/file-help/pkg/mocks"
-	"www.github.com/dingsongjie/file-help/pkg/tar"
 )
 
 var (

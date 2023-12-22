@@ -5,9 +5,9 @@ import (
 
 	"github.com/MrSaints/go-ghostscript/ghostscript"
 	"github.com/STRockefeller/go-linq"
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"github.com/sasha-s/go-deadlock"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var (

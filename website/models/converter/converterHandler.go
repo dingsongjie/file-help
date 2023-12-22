@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/STRockefeller/go-linq"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/file"
-	"www.github.com/dingsongjie/file-help/pkg/s3helper"
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/file"
+	"github.com/dingsongjie/file-help/pkg/s3helper"
 )
 
 type GetFisrtImageByGavingKeyRequestHandler struct {

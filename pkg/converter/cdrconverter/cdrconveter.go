@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"github.com/galihrivanto/go-inkscape"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var (

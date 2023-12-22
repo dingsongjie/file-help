@@ -7,13 +7,13 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/dingsongjie/file-help/configs"
+	"github.com/dingsongjie/file-help/pkg/converter/Initialize"
+	"github.com/dingsongjie/file-help/pkg/log"
+	"github.com/dingsongjie/file-help/website/routers"
 	"github.com/joho/godotenv"
 	"github.com/namsral/flag"
 	"go.uber.org/zap"
-	"www.github.com/dingsongjie/file-help/configs"
-	"www.github.com/dingsongjie/file-help/pkg/converter/Initialize"
-	"www.github.com/dingsongjie/file-help/pkg/log"
-	"www.github.com/dingsongjie/file-help/website/routers"
 
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"

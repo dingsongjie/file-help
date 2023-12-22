@@ -7,9 +7,9 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/dingsongjie/file-help/pkg/converter"
+	"github.com/dingsongjie/file-help/pkg/log"
 	"github.com/stretchr/testify/assert"
-	"www.github.com/dingsongjie/file-help/pkg/converter"
-	"www.github.com/dingsongjie/file-help/pkg/log"
 )
 
 var assert1 string = "./test/assets/1.psd"

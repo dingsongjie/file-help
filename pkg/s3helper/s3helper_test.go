@@ -12,9 +12,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface"
+	"github.com/dingsongjie/file-help/pkg/file"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"www.github.com/dingsongjie/file-help/pkg/file"
 )
 
 type mockedDownloader struct {

@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/dingsongjie/file-help/website/models/imginfo"
 	"github.com/gin-gonic/gin"
-	"www.github.com/dingsongjie/file-help/website/models/imginfo"
 )
 
 // @Security BearerAuth
